@@ -1,9 +1,9 @@
 <script lang="ts">
     import { CardanoWallet, BrowserWalletState } from "@meshsdk/svelte";
-    import UtxoDisplay from "$lib/components/UtxoDisplay.svelte";
     import { Effect } from 'effect';
     import type { Utxo } from "$lib/types";
     import { getUtxosEffect } from "$lib/wallet/getUtxosEffect";
+    import UtxoView from "$lib/components/UtxoView.svelte";
 
     $effect(() => {
         if (BrowserWalletState.wallet) {
@@ -34,21 +34,12 @@
             </a>{" "}
             SvelteKit
         </h1>
-        <div>
-            {#if state.utxos.length > 0}
-            <h2>💰 Available UTXOs</h2>
-            <ul>
-            		{#each state.utxos as utxo}
-            		    <UtxoDisplay utxo={utxo} />
-            		{/each}
-            </ul>
-        	{/if}
-        </div>
 
         <div class="mesh-mb-20">
             <CardanoWallet isDark={true} />
 
-            {#if BrowserWalletState.connected == true}
+            {#if BrowserWalletState.connected}
+                <UtxoView utxos={state.utxos} />
                 <p>Browser Wallet {BrowserWalletState.name} is connected!</p>
             {/if}
         </div>
