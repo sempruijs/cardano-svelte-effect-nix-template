@@ -5,19 +5,15 @@
     import type { Utxo } from "$lib/types";
     import { getUtxosEffect } from "$lib/wallet/getUtxosEffect";
 
-    let error: string | null = null;
-
     $effect(() => {
         if (BrowserWalletState.wallet) {
             Effect.runPromise(getUtxosEffect(BrowserWalletState.wallet))
               .then(result => {
                 state.utxos = result;
                  console.log(result);
-                error = null;
               })
               .catch(err => {
                   console.log("error fetching utxo");
-                    error = err.message;
                     state.utxos = [];
               });
         }
@@ -26,27 +22,6 @@
     let state: { utxos: Utxo[] } = $state({
         utxos: []
     });
-
-
-    const program = Effect.succeed("hello from effect");
-
-    $effect(() => {
-        Effect.runPromise(program).then((greeting) => {
-    			// state.result = greeting;
-    			console.log(greeting);
-    		});
-    	});
-
-    // $effect(() => {
-    //     if (BrowserWalletState.wallet) {
-    //         BrowserWalletState.wallet.getChangeAddress().then((addr) => {
-    //             console.log(addr);
-    //         });
-    //         BrowserWalletState.wallet.getUtxos().then((utxos) => {
-    //             console.log(utxos);
-    //         });
-    //     }
-    // });
 </script>
 
 <div class="mesh-bg-gray-900 mesh-w-full mesh-text-white mesh-text-center">
