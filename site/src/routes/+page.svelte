@@ -1,6 +1,32 @@
 <script lang="ts">
     import { CardanoWallet, BrowserWalletState } from "@meshsdk/svelte";
     import { Effect } from 'effect';
+    import type { Utxo } from "$lib/types";
+    import { getUtxosEffect } from "$lib/wallet/getUtxosEffect";
+
+    let error: string | null = null;
+
+    $effect(() => {
+        if (BrowserWalletState.wallet) {
+            Effect.runPromise(getUtxosEffect(BrowserWalletState.wallet))
+              .then(result => {
+                state.utxos = result;
+                 console.log(result);
+                error = null;
+              })
+              .catch(err => {
+                  console.log("error fetching utxo");
+                    error = err.message;
+                    state.utxos = [];
+              });
+        }
+    });
+
+    let state: { count: number, utxos: Utxo[] } = $state({
+        count: 0,
+        utxos: []
+    });
+
 
     const program = Effect.succeed("hello from effect");
 
@@ -11,16 +37,16 @@
     		});
     	});
 
-    $effect(() => {
-        if (BrowserWalletState.wallet) {
-            BrowserWalletState.wallet.getChangeAddress().then((addr) => {
-                console.log(addr);
-            });
-            BrowserWalletState.wallet.getUtxos().then((utxos) => {
-                console.log(utxos);
-            });
-        }
-    });
+    // $effect(() => {
+    //     if (BrowserWalletState.wallet) {
+    //         BrowserWalletState.wallet.getChangeAddress().then((addr) => {
+    //             console.log(addr);
+    //         });
+    //         BrowserWalletState.wallet.getUtxos().then((utxos) => {
+    //             console.log(utxos);
+    //         });
+    //     }
+    // });
 </script>
 
 <div class="mesh-bg-gray-900 mesh-w-full mesh-text-white mesh-text-center">
@@ -33,6 +59,18 @@
             </a>{" "}
             SvelteKit
         </h1>
+        <div>
+            {#if state.utxos.length > 0}
+            <h2>💰 Available UTXOs</h2>
+	<ul>
+		{#each state.utxos as utxo}
+			<li>
+				<p>{JSON.stringify(utxo, null, 2)}</p>
+			</li>
+		{/each}
+	</ul>
+	{/if}
+        </div>
 
         <div class="mesh-mb-20">
             <CardanoWallet isDark={true} />
