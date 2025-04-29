@@ -1,6 +1,7 @@
 <script lang="ts">
     import { CardanoWallet, BrowserWalletState } from "@meshsdk/svelte";
     import { Effect } from 'effect';
+    import LearnMore from '$lib/components/LearnMore.svelte';
     import type { Utxo } from "$lib/types";
     import { getUtxosEffect } from "$lib/wallet/getUtxosEffect";
     import UtxoView from "$lib/components/UtxoView.svelte";
@@ -37,6 +38,7 @@
 
         <div class="mesh-mb-20">
             <CardanoWallet isDark={true} />
+            <LearnMore />
 
             {#if BrowserWalletState.connected}
                 <UtxoView utxos={state.utxos} />
