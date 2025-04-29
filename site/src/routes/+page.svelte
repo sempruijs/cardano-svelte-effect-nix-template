@@ -1,5 +1,6 @@
 <script lang="ts">
     import { CardanoWallet, BrowserWalletState } from "@meshsdk/svelte";
+    import UtxoDisplay from "$lib/components/UtxoDisplay.svelte";
     import { Effect } from 'effect';
     import type { Utxo } from "$lib/types";
     import { getUtxosEffect } from "$lib/wallet/getUtxosEffect";
@@ -22,8 +23,7 @@
         }
     });
 
-    let state: { count: number, utxos: Utxo[] } = $state({
-        count: 0,
+    let state: { utxos: Utxo[] } = $state({
         utxos: []
     });
 
@@ -62,14 +62,12 @@
         <div>
             {#if state.utxos.length > 0}
             <h2>💰 Available UTXOs</h2>
-	<ul>
-		{#each state.utxos as utxo}
-			<li>
-				<p>{JSON.stringify(utxo, null, 2)}</p>
-			</li>
-		{/each}
-	</ul>
-	{/if}
+            <ul>
+            		{#each state.utxos as utxo}
+            		    <UtxoDisplay utxo={utxo} />
+            		{/each}
+            </ul>
+        	{/if}
         </div>
 
         <div class="mesh-mb-20">
