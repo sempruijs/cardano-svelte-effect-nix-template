@@ -1,5 +1,15 @@
 <script lang="ts">
     import { CardanoWallet, BrowserWalletState } from "@meshsdk/svelte";
+    import { Effect } from 'effect';
+
+    const program = Effect.succeed("hello from effect");
+
+    $effect(() => {
+        Effect.runPromise(program).then((greeting) => {
+    			// state.result = greeting;
+    			console.log(greeting);
+    		});
+    	});
 
     $effect(() => {
         if (BrowserWalletState.wallet) {
