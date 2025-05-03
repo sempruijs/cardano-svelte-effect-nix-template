@@ -3,12 +3,27 @@
     import { Effect } from 'effect';
     import LearnMore from '$lib/components/LearnMore.svelte';
     import type { Utxo } from "$lib/types";
-    import { getUtxosEffect } from "$lib/wallet/getUtxosEffect";
+    import { Option } from "effect";
+    import { getUtxos } from "$lib/wallet/getUtxos";
     import UtxoView from "$lib/components/UtxoView.svelte";
+    import { donateLovelace } from "$lib/wallet/donateLovelace";
+
+    function send_ada() {
+        if (BrowserWalletState.wallet) {
+            Effect.runPromise(donateLovelace(BrowserWalletState.wallet, '1000000'))
+              .then(result => {
+                state.txHash = Option.some(result);
+              })
+              .catch(err => {
+                  console.log("error fetching utxo");
+                    state.utxos = [];
+              });
+        }
+    }
 
     $effect(() => {
         if (BrowserWalletState.wallet) {
-            Effect.runPromise(getUtxosEffect(BrowserWalletState.wallet))
+            Effect.runPromise(getUtxos(BrowserWalletState.wallet))
               .then(result => {
                 state.utxos = result;
                  console.log(result);
@@ -20,8 +35,9 @@
         }
     });
 
-    let state: { utxos: Utxo[] } = $state({
-        utxos: []
+    let state: { utxos: Utxo[], txHash: Option } = $state({
+        utxos: [],
+        txHash: Option.none
     });
 </script>
 
@@ -38,6 +54,7 @@
 
         <div class="mesh-mb-20">
             <CardanoWallet isDark={true} />
+            <button onclick={send_ada}>send</button>
             <LearnMore />
 
             {#if BrowserWalletState.connected}
