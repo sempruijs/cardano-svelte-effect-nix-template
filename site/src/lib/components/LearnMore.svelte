@@ -23,19 +23,19 @@
   ];
 </script>
 
-<div class="mesh-text-white mesh-bg-gray-900 mesh-p-10 mesh-min-h-screen">
-  <h1 class="mesh-text-4xl mesh-font-bold mesh-mb-8">📚 Learn More</h1>
+<div class="">
+  <h1 class="">📚 Learn More</h1>
 
-  <div class="mesh-grid mesh-gap-6 mesh-grid-cols-1 md:mesh-grid-cols-2">
+  <div class="">
     {#each links as { title, url, description }}
       <a
-        class="mesh-block mesh-bg-gray-800 mesh-rounded-lg mesh-p-5 mesh-border mesh-border-gray-600 hover:mesh-border-sky-500 hover:mesh-scale-105 mesh-transition"
+        class=""
         href={url}
         target="_blank"
         rel="noopener noreferrer"
       >
-        <h2 class="mesh-text-xl mesh-font-semibold mesh-mb-2">{title}</h2>
-        <p class="mesh-text-gray-400">{description}</p>
+        <h2 class="">{title}</h2>
+        <p class="">{description}</p>
       </a>
     {/each}
   </div>
