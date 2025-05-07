@@ -15,8 +15,8 @@
                 state.txHash = Option.some(result);
               })
               .catch(err => {
-                  console.log("error fetching utxo");
-                    state.utxos = [];
+                  console.log("error sending ADA");
+                  state.utxos = [];
               });
         }
     }
@@ -26,11 +26,11 @@
             Effect.runPromise(getUtxos(BrowserWalletState.wallet))
               .then(result => {
                 state.utxos = result;
-                 console.log(result);
+                console.log(result);
               })
               .catch(err => {
-                  console.log("error fetching utxo");
-                    state.utxos = [];
+                  console.log("error fetching utxos");
+                  state.utxos = [];
               });
         }
     });
@@ -41,70 +41,64 @@
     });
 </script>
 
-<div class="mesh-bg-gray-900 mesh-w-full mesh-text-white mesh-text-center">
-    <main
-        class={`mesh-flex mesh-min-h-screen mesh-flex-col mesh-items-center mesh-justify-center mesh-p-24`}
-    >
-        <h1 class="mesh-text-6xl mesh-font-thin mesh-mb-20">
-            <a href="https://meshjs.dev/" class="mesh-text-sky-600">
-                Mesh
-            </a>{" "}
-            SvelteKit
+<div class="bg-red-200 min-h-screen bg-gray-100 text-gray-900 p-6">
+    <main class="max-w-4xl mx-auto space-y-8">
+        <h1 class="text-3xl font-bold text-center text-blue-600">
+            🎉 Congratulations
         </h1>
 
-        <div class="mesh-mb-20">
+        <div class="space-y-4">
             <CardanoWallet isDark={true} />
-            <button onclick={send_ada}>send</button>
+            <button
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                on:click={send_ada}
+            >
+                Send 1 ADA
+            </button>
             <LearnMore />
 
             {#if BrowserWalletState.connected}
                 <UtxoView utxos={state.utxos} />
-                <p>Browser Wallet {BrowserWalletState.name} is connected!</p>
+                <p class="text-green-600 font-medium">
+                    ✅ Browser Wallet {BrowserWalletState.name} is connected!
+                </p>
             {/if}
         </div>
 
-        <div
-            class="mesh-grid mesh-grid-cols-1 md:mesh-grid-cols-2 lg:mesh-grid-cols-3 mesh-content-center mesh-justify-around"
-        >
+        <div class="grid md:grid-cols-3 gap-4">
             <a
                 href="https://meshjs.dev/apis"
-                class="mesh-bg-gray-800 mesh-rounded-xl mesh-border mesh-border-white hover:mesh-scale-105 mesh-transition mesh-max-w-96 mesh-p-5 mesh-m-5"
+                class="bg-white rounded-lg shadow p-4 hover:ring-2 ring-blue-500 transition"
             >
-                <h2 class="mesh-text-2xl mesh-font-bold mesh-mb-2">
-                    Documentation
-                </h2>
-                <p class="mesh-text-gray-400">
-                    Our documentation provide live demos and code samples; great
-                    educational tool for learning how Cardano works.
+                <h2 class="text-xl font-semibold mb-2">Documentation</h2>
+                <p>
+                    Our documentation provides live demos and code samples — a great tool for learning how Cardano works.
                 </p>
             </a>
 
             <a
                 href="https://meshjs.dev/guides"
-                class="mesh-bg-gray-800 mesh-rounded-xl mesh-border mesh-border-white hover:mesh-scale-105 mesh-transition mesh-max-w-96 mesh-p-5 mesh-m-5"
+                class="bg-white rounded-lg shadow p-4 hover:ring-2 ring-blue-500 transition"
             >
-                <h2 class="mesh-text-2xl mesh-font-bold mesh-mb-2">Guides</h2>
-                <p class="mesh-text-gray-400">
-                    Whether you are launching a new NFT project or ecommerce
-                    store, these guides will help you get started.
+                <h2 class="text-xl font-semibold mb-2">Guides</h2>
+                <p>
+                    Launching a new NFT project or store? These guides will help you get started quickly.
                 </p>
             </a>
 
             <a
                 href="https://meshjs.dev/svelte"
-                class="mesh-bg-gray-800 mesh-rounded-xl mesh-border mesh-border-white hover:mesh-scale-105 mesh-transition mesh-max-w-96 mesh-p-5 mesh-m-5 md:mesh-mx-auto lg:mesh-mx-5 md:mesh-col-span-2 lg:mesh-col-span-1"
+                class="bg-white rounded-lg shadow p-4 hover:ring-2 ring-blue-500 transition"
             >
-                <h2 class="mesh-text-2xl mesh-font-bold mesh-mb-2">
-                    Svelte components
-                </h2>
-                <p class="mesh-text-gray-400">
-                    Useful Svelte UI components, seamlessly integrate them into
-                    your app, and bring the user interface to life.
+                <h2 class="text-xl font-semibold mb-2">Svelte Components</h2>
+                <p>
+                    Integrate Mesh's Svelte UI components to enhance your Cardano dApp experience.
                 </p>
             </a>
         </div>
     </main>
-    <footer
-        class="mesh-p-8 mesh-border-t mesh-border-gray-300 mesh-flex mesh-justify-center"
-    ></footer>
+
+    <footer class="text-center text-sm text-gray-500 mt-12">
+        &copy; {new Date().getFullYear()} Zoofpay
+    </footer>
 </div>
