@@ -39,7 +39,7 @@ const DOM_BOOLEAN_ATTRIBUTES = [
   "webkitdirectory",
   "defer",
   "disablepictureinpicture",
-  "disableremoteplayback",
+  "disableremoteplayback"
 ];
 function is_boolean_attribute(name) {
   return DOM_BOOLEAN_ATTRIBUTES.includes(name);
@@ -59,9 +59,7 @@ function escape_html(value, is_attr) {
   while (pattern.test(str)) {
     const i = pattern.lastIndex - 1;
     const ch = str[i];
-    escaped +=
-      str.substring(last, i) +
-      (ch === "&" ? "&amp;" : ch === '"' ? "&quot;" : "&lt;");
+    escaped += str.substring(last, i) + (ch === "&" ? "&amp;" : ch === '"' ? "&quot;" : "&lt;");
     last = i + 1;
   }
   return escaped + str.substring(last);
@@ -69,13 +67,12 @@ function escape_html(value, is_attr) {
 const replacements = {
   translate: /* @__PURE__ */ new Map([
     [true, "yes"],
-    [false, "no"],
-  ]),
+    [false, "no"]
+  ])
 };
 function attr(name, value, is_boolean = false) {
-  if (value == null || (!value && is_boolean)) return "";
-  const normalized =
-    (name in replacements && replacements[name].get(value)) || value;
+  if (value == null || !value && is_boolean) return "";
+  const normalized = name in replacements && replacements[name].get(value) || value;
   const assignment = is_boolean ? "" : `="${escape_html(normalized, true)}"`;
   return ` ${name}${assignment}`;
 }
@@ -89,9 +86,10 @@ function clsx(value) {
 var current_component = null;
 function getContext(key) {
   const context_map = get_or_init_context_map();
-  const result =
+  const result = (
     /** @type {T} */
-    context_map.get(key);
+    context_map.get(key)
+  );
   return result;
 }
 function setContext(key, context) {
@@ -108,17 +106,16 @@ function get_or_init_context_map(name) {
   if (current_component === null) {
     lifecycle_outside_component();
   }
-  return (current_component.c ??= new Map(
-    get_parent_context(current_component) || void 0,
-  ));
+  return current_component.c ??= new Map(get_parent_context(current_component) || void 0);
 }
 function push(fn) {
   current_component = { p: current_component, c: null, d: null };
 }
 function pop() {
-  var component =
+  var component = (
     /** @type {Component} */
-    current_component;
+    current_component
+  );
   var ondestroy = component.d;
   if (ondestroy) {
     on_destroy.push(...ondestroy);
@@ -138,62 +135,38 @@ function get_parent_context(component_context) {
 }
 const BLOCK_OPEN = `<!--${HYDRATION_START}-->`;
 const BLOCK_CLOSE = `<!--${HYDRATION_END}-->`;
-class HeadPayload {
-  /** @type {Set<{ hash: string; code: string }>} */
-  css = /* @__PURE__ */ new Set();
-  out = "";
-  uid = () => "";
-  title = "";
-  constructor(
-    css = /* @__PURE__ */ new Set(),
-    out = "",
-    title = "",
-    uid = () => "",
-  ) {
-    this.css = css;
-    this.out = out;
-    this.title = title;
-    this.uid = uid;
-  }
-}
-class Payload {
-  /** @type {Set<{ hash: string; code: string }>} */
-  css = /* @__PURE__ */ new Set();
-  out = "";
-  uid = () => "";
-  head = new HeadPayload();
-  constructor(id_prefix = "") {
-    this.uid = props_id_generator(id_prefix);
-    this.head.uid = this.uid;
-  }
-}
+const INVALID_ATTR_NAME_CHAR_REGEX = /[\s'">/=\u{FDD0}-\u{FDEF}\u{FFFE}\u{FFFF}\u{1FFFE}\u{1FFFF}\u{2FFFE}\u{2FFFF}\u{3FFFE}\u{3FFFF}\u{4FFFE}\u{4FFFF}\u{5FFFE}\u{5FFFF}\u{6FFFE}\u{6FFFF}\u{7FFFE}\u{7FFFF}\u{8FFFE}\u{8FFFF}\u{9FFFE}\u{9FFFF}\u{AFFFE}\u{AFFFF}\u{BFFFE}\u{BFFFF}\u{CFFFE}\u{CFFFF}\u{DFFFE}\u{DFFFF}\u{EFFFE}\u{EFFFF}\u{FFFFE}\u{FFFFF}\u{10FFFE}\u{10FFFF}]/u;
 function copy_payload({ out, css, head, uid }) {
-  const payload = new Payload();
-  payload.out = out;
-  payload.css = new Set(css);
-  payload.uid = uid;
-  payload.head = new HeadPayload();
-  payload.head.out = head.out;
-  payload.head.css = new Set(head.css);
-  payload.head.title = head.title;
-  payload.head.uid = head.uid;
-  return payload;
+  return {
+    out,
+    css: new Set(css),
+    head: {
+      title: head.title,
+      out: head.out,
+      css: new Set(head.css),
+      uid: head.uid
+    },
+    uid
+  };
 }
 function assign_payload(p1, p2) {
   p1.out = p2.out;
-  p1.css = p2.css;
   p1.head = p2.head;
   p1.uid = p2.uid;
 }
+let on_destroy = [];
 function props_id_generator(prefix) {
   let uid = 1;
   return () => `${prefix}s${uid++}`;
 }
-const INVALID_ATTR_NAME_CHAR_REGEX =
-  /[\s'">/=\u{FDD0}-\u{FDEF}\u{FFFE}\u{FFFF}\u{1FFFE}\u{1FFFF}\u{2FFFE}\u{2FFFF}\u{3FFFE}\u{3FFFF}\u{4FFFE}\u{4FFFF}\u{5FFFE}\u{5FFFF}\u{6FFFE}\u{6FFFF}\u{7FFFE}\u{7FFFF}\u{8FFFE}\u{8FFFF}\u{9FFFE}\u{9FFFF}\u{AFFFE}\u{AFFFF}\u{BFFFE}\u{BFFFF}\u{CFFFE}\u{CFFFF}\u{DFFFE}\u{DFFFF}\u{EFFFE}\u{EFFFF}\u{FFFFE}\u{FFFFF}\u{10FFFE}\u{10FFFF}]/u;
-let on_destroy = [];
 function render(component, options = {}) {
-  const payload = new Payload(options.idPrefix ? options.idPrefix + "-" : "");
+  const uid = props_id_generator(options.idPrefix ? options.idPrefix + "-" : "");
+  const payload = {
+    out: "",
+    css: /* @__PURE__ */ new Set(),
+    head: { title: "", out: "", css: /* @__PURE__ */ new Set(), uid },
+    uid
+  };
   const prev_on_destroy = on_destroy;
   on_destroy = [];
   payload.out += BLOCK_OPEN;
@@ -215,7 +188,7 @@ function render(component, options = {}) {
   return {
     head,
     html: payload.out,
-    body: payload.out,
+    body: payload.out
   };
 }
 function spread_attributes(attrs, css_hash, classes, styles, flags = 0) {
@@ -258,27 +231,22 @@ function bind_props(props_parent, props_now) {
   for (const key in props_now) {
     const initial_value = props_parent[key];
     const value = props_now[key];
-    if (
-      initial_value === void 0 &&
-      value !== void 0 &&
-      Object.getOwnPropertyDescriptor(props_parent, key)?.set
-    ) {
+    if (initial_value === void 0 && value !== void 0 && Object.getOwnPropertyDescriptor(props_parent, key)?.set) {
       props_parent[key] = value;
     }
   }
 }
 function ensure_array_like(array_like_or_iterator) {
   if (array_like_or_iterator) {
-    return array_like_or_iterator.length !== void 0
-      ? array_like_or_iterator
-      : Array.from(array_like_or_iterator);
+    return array_like_or_iterator.length !== void 0 ? array_like_or_iterator : Array.from(array_like_or_iterator);
   }
   return [];
 }
 function once(get_value) {
-  let value =
+  let value = (
     /** @type {V} */
-    UNINITIALIZED;
+    UNINITIALIZED
+  );
   return () => {
     if (value === UNINITIALIZED) {
       value = get_value();
@@ -307,5 +275,5 @@ export {
   push as p,
   attr as q,
   render as r,
-  setContext as s,
+  setContext as s
 };

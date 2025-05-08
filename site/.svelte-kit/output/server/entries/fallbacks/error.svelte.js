@@ -1,9 +1,4 @@
-import {
-  g as getContext,
-  e as escape_html,
-  c as pop,
-  p as push,
-} from "../../chunks/index.js";
+import { g as getContext, e as escape_html, c as pop, p as push } from "../../chunks/index.js";
 import "clsx";
 import { n as noop } from "../../chunks/equality.js";
 import { w as writable } from "../../chunks/exports.js";
@@ -16,13 +11,11 @@ function create_updated_store() {
     return {
       subscribe,
       // eslint-disable-next-line @typescript-eslint/require-await
-      check: async () => false,
+      check: async () => false
     };
   }
 }
-const is_legacy =
-  noop.toString().includes("$$") ||
-  /function \w+\(\) \{\}/.test(noop.toString());
+const is_legacy = noop.toString().includes("$$") || /function \w+\(\) \{\}/.test(noop.toString());
 if (is_legacy) {
   ({
     data: {},
@@ -32,21 +25,22 @@ if (is_legacy) {
     route: { id: null },
     state: {},
     status: -1,
-    url: new URL("https://example.com"),
+    url: new URL("https://example.com")
   });
 }
 function get(key, parse = JSON.parse) {
   try {
     return parse(sessionStorage[key]);
-  } catch {}
+  } catch {
+  }
 }
 get(SCROLL_KEY) ?? {};
 get(SNAPSHOT_KEY) ?? {};
 const stores = {
-  updated: /* @__PURE__ */ create_updated_store(),
+  updated: /* @__PURE__ */ create_updated_store()
 };
 ({
-  check: stores.updated.check,
+  check: stores.updated.check
 });
 function context() {
   return getContext("__request__");
@@ -57,7 +51,7 @@ const page$1 = {
   },
   get status() {
     return context().page.status;
-  },
+  }
 };
 const page = page$1;
 function Error$1($$payload, $$props) {
@@ -65,4 +59,6 @@ function Error$1($$payload, $$props) {
   $$payload.out += `<h1>${escape_html(page.status)}</h1> <p>${escape_html(page.error?.message)}</p>`;
   pop();
 }
-export { Error$1 as default };
+export {
+  Error$1 as default
+};

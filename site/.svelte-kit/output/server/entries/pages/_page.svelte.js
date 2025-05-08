@@ -1,25 +1,10 @@
-import {
-  s as setContext$1,
-  h as hasContext,
-  g as getContext$1,
-  p as push,
-  c as pop,
-  o as once,
-  d as spread_attributes,
-  f as bind_props,
-  j as getAllContexts,
-  k as spread_props,
-  l as copy_payload,
-  m as assign_payload,
-  e as escape_html,
-  n as ensure_array_like,
-  q as attr,
-} from "../../chunks/index.js";
+import { s as setContext$1, h as hasContext, g as getContext$1, p as push, c as pop, o as once, d as spread_attributes, f as bind_props, j as getAllContexts, k as spread_props, l as copy_payload, m as assign_payload, e as escape_html, n as ensure_array_like, q as attr } from "../../chunks/index.js";
 import { clsx } from "clsx";
 import "@meshsdk/core";
 import parse from "style-to-object";
 import { Option } from "effect";
-async function tick() {}
+async function tick() {
+}
 function isFunction(value) {
   return typeof value === "function";
 }
@@ -44,7 +29,7 @@ function box(initialValue) {
     },
     set current(v) {
       current = v;
-    },
+    }
   };
 }
 function boxWith(getter, setter) {
@@ -58,14 +43,14 @@ function boxWith(getter, setter) {
       },
       set current(v) {
         setter(v);
-      },
+      }
     };
   }
   return {
     [BoxSymbol]: true,
     get current() {
       return getter();
-    },
+    }
   };
 }
 function boxFrom(value) {
@@ -74,28 +59,31 @@ function boxFrom(value) {
   return box(value);
 }
 function boxFlatten(boxes) {
-  return Object.entries(boxes).reduce((acc, [key, b]) => {
-    if (!box.isBox(b)) {
-      return Object.assign(acc, { [key]: b });
-    }
-    if (box.isWritableBox(b)) {
-      Object.defineProperty(acc, key, {
-        get() {
-          return b.current;
-        },
-        set(v) {
-          b.current = v;
-        },
-      });
-    } else {
-      Object.defineProperty(acc, key, {
-        get() {
-          return b.current;
-        },
-      });
-    }
-    return acc;
-  }, {});
+  return Object.entries(boxes).reduce(
+    (acc, [key, b]) => {
+      if (!box.isBox(b)) {
+        return Object.assign(acc, { [key]: b });
+      }
+      if (box.isWritableBox(b)) {
+        Object.defineProperty(acc, key, {
+          get() {
+            return b.current;
+          },
+          set(v) {
+            b.current = v;
+          }
+        });
+      } else {
+        Object.defineProperty(acc, key, {
+          get() {
+            return b.current;
+          }
+        });
+      }
+      return acc;
+    },
+    {}
+  );
 }
 function toReadonlyBox(b) {
   if (!box.isWritableBox(b)) return b;
@@ -103,7 +91,7 @@ function toReadonlyBox(b) {
     [BoxSymbol]: true,
     get current() {
       return b.current;
-    },
+    }
   };
 }
 box.from = boxFrom;
@@ -113,10 +101,12 @@ box.readonly = toReadonlyBox;
 box.isBox = isBox;
 box.isWritableBox = isWritableBox;
 function composeHandlers(...handlers) {
-  return function (e) {
+  return function(e) {
     for (const handler of handlers) {
-      if (!handler) continue;
-      if (e.defaultPrevented) return;
+      if (!handler)
+        continue;
+      if (e.defaultPrevented)
+        return;
       if (typeof handler === "function") {
         handler.call(this, e);
       } else {
@@ -128,7 +118,8 @@ function composeHandlers(...handlers) {
 const NUMBER_CHAR_RE = /\d/;
 const STR_SPLITTERS = ["-", "_", "/", "."];
 function isUppercase(char = "") {
-  if (NUMBER_CHAR_RE.test(char)) return void 0;
+  if (NUMBER_CHAR_RE.test(char))
+    return void 0;
   return char !== char.toLowerCase();
 }
 function splitByCase(str) {
@@ -168,10 +159,9 @@ function splitByCase(str) {
   return parts;
 }
 function pascalCase(str) {
-  if (!str) return "";
-  return splitByCase(str)
-    .map((p) => upperFirst(p))
-    .join("");
+  if (!str)
+    return "";
+  return splitByCase(str).map((p) => upperFirst(p)).join("");
 }
 function camelCase(str) {
   return lowerFirst(pascalCase(str || ""));
@@ -183,15 +173,11 @@ function lowerFirst(str) {
   return str ? str[0].toLowerCase() + str.slice(1) : "";
 }
 function cssToStyleObj(css) {
-  if (!css) return {};
+  if (!css)
+    return {};
   const styleObj = {};
   function iterator(name, value) {
-    if (
-      name.startsWith("-moz-") ||
-      name.startsWith("-webkit-") ||
-      name.startsWith("-ms-") ||
-      name.startsWith("-o-")
-    ) {
+    if (name.startsWith("-moz-") || name.startsWith("-webkit-") || name.startsWith("-ms-") || name.startsWith("-o-")) {
       styleObj[pascalCase(name)] = value;
       return;
     }
@@ -217,27 +203,19 @@ function createParser(matcher, replacer) {
   const regex = RegExp(matcher, "g");
   return (str) => {
     if (typeof str !== "string") {
-      throw new TypeError(
-        `expected an argument of type string, but got ${typeof str}`,
-      );
+      throw new TypeError(`expected an argument of type string, but got ${typeof str}`);
     }
-    if (!str.match(regex)) return str;
+    if (!str.match(regex))
+      return str;
     return str.replace(regex, replacer);
   };
 }
-const camelToKebab = createParser(
-  /[A-Z]/,
-  (match) => `-${match.toLowerCase()}`,
-);
+const camelToKebab = createParser(/[A-Z]/, (match) => `-${match.toLowerCase()}`);
 function styleToCSS(styleObj) {
   if (!styleObj || typeof styleObj !== "object" || Array.isArray(styleObj)) {
-    throw new TypeError(
-      `expected an argument of type object, but got ${typeof styleObj}`,
-    );
+    throw new TypeError(`expected an argument of type object, but got ${typeof styleObj}`);
   }
-  return Object.keys(styleObj)
-    .map((property) => `${camelToKebab(property)}: ${styleObj[property]};`)
-    .join("\n");
+  return Object.keys(styleObj).map((property) => `${camelToKebab(property)}: ${styleObj[property]};`).join("\n");
 }
 function styleToString(style = {}) {
   return styleToCSS(style).replace("\n", " ");
@@ -252,13 +230,11 @@ const srOnlyStyles = {
   clip: "rect(0, 0, 0, 0)",
   whiteSpace: "nowrap",
   borderWidth: "0",
-  transform: "translateX(-100%)",
+  transform: "translateX(-100%)"
 };
 styleToString(srOnlyStyles);
 function isEventHandler(key) {
-  return (
-    key.length > 2 && key.startsWith("on") && key[2] === key[2]?.toLowerCase()
-  );
+  return key.length > 2 && key.startsWith("on") && key[2] === key[2]?.toLowerCase();
 }
 function mergeProps(...args) {
   const result = { ...args[0] };
@@ -275,11 +251,7 @@ function mergeProps(...args) {
         result[key] = composeHandlers(aHandler, bHandler);
       } else if (aIsFunction && bIsFunction) {
         result[key] = executeCallbacks(a, b);
-      } else if (
-        key === "class" &&
-        typeof a === "string" &&
-        typeof b === "string"
-      ) {
+      } else if (key === "class" && typeof a === "string" && typeof b === "string") {
         result[key] = clsx(a, b);
       } else if (key === "style") {
         const aIsObject = typeof a === "object";
@@ -323,8 +295,9 @@ function useRefById({
   id,
   ref,
   deps = () => true,
-  onRefChange = () => {},
-  getRootNode = () => (typeof document !== "undefined" ? document : void 0),
+  onRefChange = () => {
+  },
+  getRootNode = () => typeof document !== "undefined" ? document : void 0
 }) {
   (() => deps())();
   (() => getRootNode())();
@@ -362,10 +335,13 @@ function isSelectableInput(element) {
   return element instanceof HTMLInputElement && "select" in element;
 }
 function isElementHidden(node, stopAt) {
-  if (getComputedStyle(node).visibility === "hidden") return true;
+  if (getComputedStyle(node).visibility === "hidden")
+    return true;
   while (node) {
-    if (stopAt !== void 0 && node === stopAt) return false;
-    if (getComputedStyle(node).display === "none") return true;
+    if (stopAt !== void 0 && node === stopAt)
+      return false;
+    if (getComputedStyle(node).display === "none")
+      return true;
     node = node.parentElement;
   }
   return false;
@@ -378,9 +354,7 @@ function getContext(key, fallback) {
   const description = typeof key === "symbol" ? key.description : key;
   if (!hasContext(trueKey)) {
     if (fallback === void 0) {
-      throw new Error(
-        `Missing context dependency: ${description} and no fallback was provided.`,
-      );
+      throw new Error(`Missing context dependency: ${description} and no fallback was provided.`);
     }
     return fallback;
   }
@@ -398,11 +372,10 @@ function createContext(providerComponentName, contextName, useSymbol = true) {
   function getCtx(fallback) {
     const context = getContext(useSymbol ? symbol : key, fallback);
     if (context === void 0) {
-      throw new Error(
-        `Context \`${symbolDescription}\` not found. Component must be used within ${Array.isArray(providerComponentName) ? `one of the following components: ${providerComponentName.join(", ")}` : `\`${providerComponentName}\``}`,
-      );
+      throw new Error(`Context \`${symbolDescription}\` not found. Component must be used within ${Array.isArray(providerComponentName) ? `one of the following components: ${providerComponentName.join(", ")}` : `\`${providerComponentName}\``}`);
     }
-    if (context === null) return context;
+    if (context === null)
+      return context;
     return context;
   }
   function setCtx(value) {
@@ -419,7 +392,8 @@ function useId(prefix = "bits") {
   count++;
   return `${prefix}-${count}`;
 }
-function noop() {}
+function noop() {
+}
 function useStateMachine(initialState, machine) {
   const state = box(initialState);
   function reducer(event) {
@@ -436,27 +410,22 @@ function usePresence(present, id) {
   const { state } = useStateMachine(initialState, {
     mounted: {
       UNMOUNT: "unmounted",
-      ANIMATION_OUT: "unmountSuspended",
+      ANIMATION_OUT: "unmountSuspended"
     },
     unmountSuspended: { MOUNT: "mounted", ANIMATION_END: "unmounted" },
-    unmounted: { MOUNT: "mounted" },
+    unmounted: { MOUNT: "mounted" }
   });
-  const isPresentDerived = ["mounted", "unmountSuspended"].includes(
-    state.current,
-  );
+  const isPresentDerived = ["mounted", "unmountSuspended"].includes(state.current);
   return {
     get current() {
       return isPresentDerived;
-    },
+    }
   };
 }
 function Presence_layer($$payload, $$props) {
   push();
   let { present, forceMount, presence, id } = $$props;
-  const isPresent = usePresence(
-    box.with(() => present),
-    box.with(() => id),
-  );
+  const isPresent = usePresence(box.with(() => present), box.with(() => id));
   if (forceMount || present || isPresent.current) {
     $$payload.out += "<!--[-->";
     presence?.($$payload, { present: isPresent });
@@ -476,7 +445,7 @@ function createAttrs(variant) {
     description: `data-${variant}-description`,
     close: `data-${variant}-close`,
     cancel: `data-${variant}-cancel`,
-    action: `data-${variant}-action`,
+    action: `data-${variant}-action`
   };
 }
 class DialogRootState {
@@ -508,7 +477,7 @@ class DialogRootState {
     this.open.current = false;
   };
   #sharedProps = once(() => ({
-    "data-state": getDataOpenClosed(this.open.current),
+    "data-state": getDataOpenClosed(this.open.current)
   }));
   get sharedProps() {
     return this.#sharedProps();
@@ -530,7 +499,7 @@ class DialogTriggerState {
       onRefChange: (node) => {
         this.#root.triggerNode = node;
         this.#root.triggerId = node?.id;
-      },
+      }
     });
   }
   #onclick = (e) => {
@@ -561,7 +530,7 @@ class DialogTriggerState {
     onpointerdown: this.#onpointerdown,
     onkeydown: this.#onkeydown,
     onclick: this.#onclick,
-    ...this.#root.sharedProps,
+    ...this.#root.sharedProps
   }));
   get props() {
     return this.#props();
@@ -583,7 +552,7 @@ class DialogCloseState {
     useRefById({
       id: this.#id,
       ref: this.#ref,
-      deps: () => this.#root.open.current,
+      deps: () => this.#root.open.current
     });
   }
   #onclick = (e) => {
@@ -611,7 +580,7 @@ class DialogCloseState {
     onpointerdown: this.#onpointerdown,
     onclick: this.#onclick,
     onkeydown: this.#onkeydown,
-    ...this.#root.sharedProps,
+    ...this.#root.sharedProps
   }));
   get props() {
     return this.#props();
@@ -634,7 +603,7 @@ class DialogTitleState {
         this.#root.titleNode = node;
         this.#root.titleId = node?.id;
       },
-      deps: () => this.#root.open.current,
+      deps: () => this.#root.open.current
     });
   }
   #props = once(() => ({
@@ -642,7 +611,7 @@ class DialogTitleState {
     role: "heading",
     "aria-level": this.#level.current,
     [this.#root.attrs.title]: "",
-    ...this.#root.sharedProps,
+    ...this.#root.sharedProps
   }));
   get props() {
     return this.#props();
@@ -663,13 +632,13 @@ class DialogDescriptionState {
       onRefChange: (node) => {
         this.#root.descriptionNode = node;
         this.#root.descriptionId = node?.id;
-      },
+      }
     });
   }
   #props = once(() => ({
     id: this.#id.current,
     [this.#root.attrs.description]: "",
-    ...this.#root.sharedProps,
+    ...this.#root.sharedProps
   }));
   get props() {
     return this.#props();
@@ -690,7 +659,7 @@ class DialogContentState {
       onRefChange: (node) => {
         this.root.contentNode = node;
         this.root.contentId = node?.id;
-      },
+      }
     });
   }
   #snippetProps = once(() => ({ open: this.root.open.current }));
@@ -699,13 +668,12 @@ class DialogContentState {
   }
   #props = once(() => ({
     id: this.#id.current,
-    role:
-      this.root.variant.current === "alert-dialog" ? "alertdialog" : "dialog",
+    role: this.root.variant.current === "alert-dialog" ? "alertdialog" : "dialog",
     "aria-describedby": this.root.descriptionId,
     "aria-labelledby": this.root.titleId,
     [this.root.attrs.content]: "",
     style: { pointerEvents: "auto" },
-    ...this.root.sharedProps,
+    ...this.root.sharedProps
   }));
   get props() {
     return this.#props();
@@ -722,7 +690,7 @@ class DialogOverlayState {
     useRefById({
       id: this.#id,
       ref: this.#ref,
-      deps: () => this.root.open.current,
+      deps: () => this.root.open.current
     });
   }
   #snippetProps = once(() => ({ open: this.root.open.current }));
@@ -733,14 +701,13 @@ class DialogOverlayState {
     id: this.#id.current,
     [this.root.attrs.overlay]: "",
     style: { pointerEvents: "auto" },
-    ...this.root.sharedProps,
+    ...this.root.sharedProps
   }));
   get props() {
     return this.#props();
   }
 }
-const [setDialogRootContext, getDialogRootContext] =
-  createContext("Dialog.Root");
+const [setDialogRootContext, getDialogRootContext] = createContext("Dialog.Root");
 function useDialogRoot(props) {
   return setDialogRootContext(new DialogRootState(props));
 }
@@ -778,10 +745,7 @@ function Dialog_title($$payload, $$props) {
   const titleState = useDialogTitle({
     id: box.with(() => id),
     level: box.with(() => level),
-    ref: box.with(
-      () => ref,
-      (v) => (ref = v),
-    ),
+    ref: box.with(() => ref, (v) => ref = v)
   });
   const mergedProps = mergeProps(restProps, titleState.props);
   if (child) {
@@ -810,7 +774,7 @@ function Portal($$payload, $$props) {
       localTarget = document.querySelector(to);
     } else if (to instanceof HTMLElement || to instanceof DocumentFragment) {
       localTarget = to;
-    } else;
+    } else ;
     return localTarget;
   }
   if (disabled) {
@@ -827,9 +791,7 @@ function addEventListener(target, event, handler, options) {
   const events = Array.isArray(event) ? event : [event];
   events.forEach((_event) => target.addEventListener(_event, handler, options));
   return () => {
-    events.forEach((_event) =>
-      target.removeEventListener(_event, handler, options),
-    );
+    events.forEach((_event) => target.removeEventListener(_event, handler, options));
   };
 }
 function debounce(fn, wait = 500) {
@@ -879,7 +841,7 @@ class DismissibleLayerState {
       deps: () => this.#enabled.current,
       onRefChange: (node) => {
         this.currNode = node;
-      },
+      }
     });
     this.#behaviorType = props.interactOutsideBehavior;
     this.#interactOutsideProp = props.onInteractOutside;
@@ -898,38 +860,23 @@ class DismissibleLayerState {
   #addEventListeners() {
     return executeCallbacks(
       /**
-       * CAPTURE INTERACTION START
-       * mark interaction-start event as intercepted.
-       * mark responsible layer during interaction start
-       * to avoid checking if is responsible layer during interaction end
-       * when a new floating element may have been opened.
-       */
-      addEventListener(
-        this.#documentObj,
-        "pointerdown",
-        executeCallbacks(
-          this.#markInterceptedEvent,
-          this.#markResponsibleLayer,
-        ),
-        true,
-      ),
+      * CAPTURE INTERACTION START
+      * mark interaction-start event as intercepted.
+      * mark responsible layer during interaction start
+      * to avoid checking if is responsible layer during interaction end
+      * when a new floating element may have been opened.
+      */
+      addEventListener(this.#documentObj, "pointerdown", executeCallbacks(this.#markInterceptedEvent, this.#markResponsibleLayer), true),
       /**
-       * BUBBLE INTERACTION START
-       * Mark interaction-start event as non-intercepted. Debounce `onInteractOutsideStart`
-       * to avoid prematurely checking if other events were intercepted.
-       */
-      addEventListener(
-        this.#documentObj,
-        "pointerdown",
-        executeCallbacks(
-          this.#markNonInterceptedEvent,
-          this.#handleInteractOutside,
-        ),
-      ),
+      * BUBBLE INTERACTION START
+      * Mark interaction-start event as non-intercepted. Debounce `onInteractOutsideStart`
+      * to avoid prematurely checking if other events were intercepted.
+      */
+      addEventListener(this.#documentObj, "pointerdown", executeCallbacks(this.#markNonInterceptedEvent, this.#handleInteractOutside)),
       /**
-       * HANDLE FOCUS OUTSIDE
-       */
-      addEventListener(this.#documentObj, "focusin", this.#handleFocus),
+      * HANDLE FOCUS OUTSIDE
+      */
+      addEventListener(this.#documentObj, "focusin", this.#handleFocus)
     );
   }
   #handleDismiss = (e) => {
@@ -939,45 +886,34 @@ class DismissibleLayerState {
     }
     this.#interactOutsideProp.current(e);
   };
-  #handleInteractOutside = debounce((e) => {
-    if (!this.currNode) {
-      this.#unsubClickListener();
-      return;
-    }
-    const isEventValid =
-      this.#isValidEventProp.current(e, this.currNode) ||
-      isValidEvent(e, this.currNode);
-    if (
-      !this.#isResponsibleLayer ||
-      this.#isAnyEventIntercepted() ||
-      !isEventValid
-    ) {
-      this.#unsubClickListener();
-      return;
-    }
-    let event = e;
-    if (event.defaultPrevented) {
-      event = createWrappedEvent(event);
-    }
-    if (
-      this.#behaviorType.current !== "close" &&
-      this.#behaviorType.current !== "defer-otherwise-close"
-    ) {
-      this.#unsubClickListener();
-      return;
-    }
-    if (e.pointerType === "touch") {
-      this.#unsubClickListener();
-      this.#unsubClickListener = addEventListener(
-        this.#documentObj,
-        "click",
-        this.#handleDismiss,
-        { once: true },
-      );
-    } else {
-      this.#interactOutsideProp.current(event);
-    }
-  }, 10);
+  #handleInteractOutside = debounce(
+    (e) => {
+      if (!this.currNode) {
+        this.#unsubClickListener();
+        return;
+      }
+      const isEventValid = this.#isValidEventProp.current(e, this.currNode) || isValidEvent(e, this.currNode);
+      if (!this.#isResponsibleLayer || this.#isAnyEventIntercepted() || !isEventValid) {
+        this.#unsubClickListener();
+        return;
+      }
+      let event = e;
+      if (event.defaultPrevented) {
+        event = createWrappedEvent(event);
+      }
+      if (this.#behaviorType.current !== "close" && this.#behaviorType.current !== "defer-otherwise-close") {
+        this.#unsubClickListener();
+        return;
+      }
+      if (e.pointerType === "touch") {
+        this.#unsubClickListener();
+        this.#unsubClickListener = addEventListener(this.#documentObj, "click", this.#handleDismiss, { once: true });
+      } else {
+        this.#interactOutsideProp.current(event);
+      }
+    },
+    10
+  );
   #markInterceptedEvent = (e) => {
     this.#interceptedEvents[e.type] = true;
   };
@@ -992,12 +928,15 @@ class DismissibleLayerState {
     if (!this.node.current) return false;
     return isOrContainsTarget(this.node.current, target);
   };
-  #resetState = debounce(() => {
-    for (const eventType in this.#interceptedEvents) {
-      this.#interceptedEvents[eventType] = false;
-    }
-    this.#isResponsibleLayer = false;
-  }, 20);
+  #resetState = debounce(
+    () => {
+      for (const eventType in this.#interceptedEvents) {
+        this.#interceptedEvents[eventType] = false;
+      }
+      this.#isResponsibleLayer = false;
+    },
+    20
+  );
   #isAnyEventIntercepted() {
     const i = Object.values(this.#interceptedEvents).some(Boolean);
     return i;
@@ -1010,17 +949,14 @@ class DismissibleLayerState {
   };
   props = {
     onfocuscapture: this.#onfocuscapture,
-    onblurcapture: this.#onblurcapture,
+    onblurcapture: this.#onblurcapture
   };
 }
 function useDismissibleLayer(props) {
   return new DismissibleLayerState(props);
 }
 function getTopMostLayer(layersArr) {
-  return layersArr.findLast(
-    ([_, { current: behaviorType }]) =>
-      behaviorType === "close" || behaviorType === "ignore",
-  );
+  return layersArr.findLast(([_, { current: behaviorType }]) => behaviorType === "close" || behaviorType === "ignore");
 }
 function isResponsibleLayer(node) {
   const layersArr = [...globalThis.bitsDismissableLayers];
@@ -1034,9 +970,7 @@ function isValidEvent(e, node) {
   const target = e.target;
   if (!isElement(target)) return false;
   const ownerDocument = getOwnerDocument(target);
-  const isValid =
-    ownerDocument.documentElement.contains(target) &&
-    !isOrContainsTarget(node, target);
+  const isValid = ownerDocument.documentElement.contains(target) && !isOrContainsTarget(node, target);
   return isValid;
 }
 function createWrappedEvent(e) {
@@ -1072,7 +1006,7 @@ function createWrappedEvent(e) {
         return target[prop];
       }
       return e[prop];
-    },
+    }
   });
   return wrappedEvent;
 }
@@ -1085,7 +1019,7 @@ function Dismissible_layer($$payload, $$props) {
     id,
     children,
     enabled,
-    isValidEvent: isValidEvent2 = () => false,
+    isValidEvent: isValidEvent2 = () => false
   } = $$props;
   const dismissibleLayerState = useDismissibleLayer({
     id: box.with(() => id),
@@ -1093,7 +1027,7 @@ function Dismissible_layer($$payload, $$props) {
     onInteractOutside: box.with(() => onInteractOutside),
     enabled: box.with(() => enabled),
     onFocusOutside: box.with(() => onFocusOutside),
-    isValidEvent: box.with(() => isValidEvent2),
+    isValidEvent: box.with(() => isValidEvent2)
   });
   children?.($$payload, { props: dismissibleLayerState.props });
   $$payload.out += `<!---->`;
@@ -1110,17 +1044,14 @@ class EscapeLayerState {
     this.#enabled = props.enabled;
   }
   #addEventListener = () => {
-    return addEventListener(document, "keydown", this.#onkeydown, {
-      passive: false,
-    });
+    return addEventListener(document, "keydown", this.#onkeydown, { passive: false });
   };
   #onkeydown = (e) => {
     if (e.key !== ESCAPE || !isResponsibleEscapeLayer(this)) return;
     const clonedEvent = new KeyboardEvent(e.type, e);
     e.preventDefault();
     const behaviorType = this.#behaviorType.current;
-    if (behaviorType !== "close" && behaviorType !== "defer-otherwise-close")
-      return;
+    if (behaviorType !== "close" && behaviorType !== "defer-otherwise-close") return;
     this.#onEscapeProp.current(clonedEvent);
   };
 }
@@ -1129,10 +1060,7 @@ function useEscapeLayer(props) {
 }
 function isResponsibleEscapeLayer(instance) {
   const layersArr = [...globalThis.bitsEscapeLayers];
-  const topMostLayer = layersArr.findLast(
-    ([_, { current: behaviorType }]) =>
-      behaviorType === "close" || behaviorType === "ignore",
-  );
+  const topMostLayer = layersArr.findLast(([_, { current: behaviorType }]) => behaviorType === "close" || behaviorType === "ignore");
   if (topMostLayer) return topMostLayer[0] === instance;
   const [firstLayerNode] = layersArr[0];
   return firstLayerNode === instance;
@@ -1143,12 +1071,12 @@ function Escape_layer($$payload, $$props) {
     escapeKeydownBehavior = "close",
     onEscapeKeydown = noop,
     children,
-    enabled,
+    enabled
   } = $$props;
   useEscapeLayer({
     escapeKeydownBehavior: box.with(() => escapeKeydownBehavior),
     onEscapeKeydown: box.with(() => onEscapeKeydown),
-    enabled: box.with(() => enabled),
+    enabled: box.with(() => enabled)
   });
   children?.($$payload);
   $$payload.out += `<!---->`;
@@ -1166,24 +1094,22 @@ function createFocusScopeAPI() {
     },
     resume() {
       paused = false;
-    },
+    }
   };
 }
 function focus(element, { select = false } = {}) {
-  if (!(element && element.focus)) return;
+  if (!(element && element.focus))
+    return;
   const previouslyFocusedElement = document.activeElement;
   element.focus({ preventScroll: true });
-  if (
-    element !== previouslyFocusedElement &&
-    isSelectableInput(element) &&
-    select
-  ) {
+  if (element !== previouslyFocusedElement && isSelectableInput(element) && select) {
     element.select();
   }
 }
 function findVisible(elements, container) {
   for (const element of elements) {
-    if (!isElementHidden(element, container)) return element;
+    if (!isElementHidden(element, container))
+      return element;
   }
 }
 function getTabbableCandidates(container) {
@@ -1194,12 +1120,11 @@ function getTabbableCandidates(container) {
       const isHiddenInput = node.tagName === "INPUT" && node.type === "hidden";
       if (node.disabled || node.hidden || isHiddenInput)
         return NodeFilter.FILTER_SKIP;
-      return node.tabIndex >= 0
-        ? NodeFilter.FILTER_ACCEPT
-        : NodeFilter.FILTER_SKIP;
-    },
+      return node.tabIndex >= 0 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+    }
   });
-  while (walker.nextNode()) nodes.push(walker.currentNode);
+  while (walker.nextNode())
+    nodes.push(walker.currentNode);
   return nodes;
 }
 function getTabbableEdges(container) {
@@ -1214,7 +1139,7 @@ function useFocusScope({
   enabled,
   onOpenAutoFocus,
   onCloseAutoFocus,
-  forceMount,
+  forceMount
 }) {
   const focusScope = createFocusScopeAPI();
   const ref = box(null);
@@ -1247,12 +1172,12 @@ function useFocusScope({
   const props = (() => ({
     id: id.current,
     tabindex: -1,
-    onkeydown: handleKeydown,
+    onkeydown: handleKeydown
   }))();
   return {
     get props() {
       return props;
-    },
+    }
   };
 }
 function Focus_scope($$payload, $$props) {
@@ -1264,7 +1189,7 @@ function Focus_scope($$payload, $$props) {
     onCloseAutoFocus = noop,
     onOpenAutoFocus = noop,
     focusScope,
-    forceMount = false,
+    forceMount = false
   } = $$props;
   const focusScopeState = useFocusScope({
     enabled: box.with(() => trapFocus),
@@ -1272,7 +1197,7 @@ function Focus_scope($$payload, $$props) {
     onCloseAutoFocus: box.with(() => onCloseAutoFocus),
     onOpenAutoFocus: box.with(() => onOpenAutoFocus),
     id: box.with(() => id),
-    forceMount: box.with(() => forceMount),
+    forceMount: box.with(() => forceMount)
   });
   focusScope?.($$payload, { props: focusScopeState.props });
   $$payload.out += `<!---->`;
@@ -1294,28 +1219,16 @@ class TextSelectionLayerState {
     useRefById({
       id: this.#id,
       ref: this.#ref,
-      deps: () => this.#enabled.current,
+      deps: () => this.#enabled.current
     });
   }
   #addEventListeners() {
-    return executeCallbacks(
-      addEventListener(document, "pointerdown", this.#pointerdown),
-      addEventListener(
-        document,
-        "pointerup",
-        composeHandlers(this.#resetSelectionLock, this.#onPointerUpProp),
-      ),
-    );
+    return executeCallbacks(addEventListener(document, "pointerdown", this.#pointerdown), addEventListener(document, "pointerup", composeHandlers(this.#resetSelectionLock, this.#onPointerUpProp)));
   }
   #pointerdown = (e) => {
     const node = this.#ref.current;
     const target = e.target;
-    if (
-      !isHTMLElement(node) ||
-      !isHTMLElement(target) ||
-      !this.#enabled.current
-    )
-      return;
+    if (!isHTMLElement(node) || !isHTMLElement(target) || !this.#enabled.current) return;
     if (!isHighestLayer(this) || !isOrContainsTarget(node, target)) return;
     this.#onPointerDownProp.current(e);
     if (e.defaultPrevented) return;
@@ -1329,8 +1242,7 @@ class TextSelectionLayerState {
 function useTextSelectionLayer(props) {
   return new TextSelectionLayerState(props);
 }
-const getUserSelect = (node) =>
-  node.style.userSelect || node.style.webkitUserSelect;
+const getUserSelect = (node) => node.style.userSelect || node.style.webkitUserSelect;
 function preventTextSelectionOverflow(node) {
   const body = document.body;
   const originalBodyUserSelect = getUserSelect(body);
@@ -1361,14 +1273,14 @@ function Text_selection_layer($$payload, $$props) {
     onPointerUp = noop,
     id,
     children,
-    enabled,
+    enabled
   } = $$props;
   useTextSelectionLayer({
     id: box.with(() => id),
     preventOverflowTextSelection: box.with(() => preventOverflowTextSelection),
     onPointerDown: box.with(() => onPointerDown),
     onPointerUp: box.with(() => onPointerUp),
-    enabled: box.with(() => enabled),
+    enabled: box.with(() => enabled)
   });
   children?.($$payload);
   $$payload.out += `<!---->`;
@@ -1386,15 +1298,15 @@ function useBodyScrollLock(initialState, restoreScrollDelay = () => null) {
   const countState = useBodyLockStackCount();
   restoreScrollDelay();
   countState.map.set(id, initialState ?? false);
-  const locked = box.with(
-    () => countState.map.get(id) ?? false,
-    (v) => countState.map.set(id, v),
-  );
+  const locked = box.with(() => countState.map.get(id) ?? false, (v) => countState.map.set(id, v));
   return locked;
 }
 function Scroll_lock($$payload, $$props) {
   push();
-  let { preventScroll = true, restoreScrollDelay = null } = $$props;
+  let {
+    preventScroll = true,
+    restoreScrollDelay = null
+  } = $$props;
   useBodyScrollLock(preventScroll, () => restoreScrollDelay);
   pop();
 }
@@ -1418,19 +1330,16 @@ function Dialog_overlay($$payload, $$props) {
   } = $$props;
   const overlayState = useDialogOverlay({
     id: box.with(() => id),
-    ref: box.with(
-      () => ref,
-      (v) => (ref = v),
-    ),
+    ref: box.with(() => ref, (v) => ref = v)
   });
   const mergedProps = mergeProps(restProps, overlayState.props);
   {
-    let presence = function ($$payload2) {
+    let presence = function($$payload2) {
       if (child) {
         $$payload2.out += "<!--[-->";
         child($$payload2, {
           props: mergeProps(mergedProps),
-          ...overlayState.snippetProps,
+          ...overlayState.snippetProps
         });
         $$payload2.out += `<!---->`;
       } else {
@@ -1444,7 +1353,7 @@ function Dialog_overlay($$payload, $$props) {
     Presence_layer($$payload, {
       id,
       present: overlayState.root.open.current || forceMount,
-      presence,
+      presence
     });
   }
   bind_props($$props, { ref });
@@ -1464,11 +1373,8 @@ function Dialog_trigger($$payload, $$props) {
   } = $$props;
   const triggerState = useDialogTrigger({
     id: box.with(() => id),
-    ref: box.with(
-      () => ref,
-      (v) => (ref = v),
-    ),
-    disabled: box.with(() => Boolean(disabled)),
+    ref: box.with(() => ref, (v) => ref = v),
+    disabled: box.with(() => Boolean(disabled))
   });
   const mergedProps = mergeProps(restProps, triggerState.props);
   if (child) {
@@ -1498,10 +1404,7 @@ function Dialog_description($$payload, $$props) {
   } = $$props;
   const descriptionState = useDialogDescription({
     id: box.with(() => id),
-    ref: box.with(
-      () => ref,
-      (v) => (ref = v),
-    ),
+    ref: box.with(() => ref, (v) => ref = v)
   });
   const mergedProps = mergeProps(restProps, descriptionState.props);
   if (child) {
@@ -1537,7 +1440,7 @@ class SeparatorRootState {
     "aria-orientation": getAriaOrientation(this.#orientation.current),
     "aria-hidden": getAriaHidden(this.#decorative.current),
     "data-orientation": getDataOrientation(this.#orientation.current),
-    [ROOT_ATTR]: "",
+    [ROOT_ATTR]: ""
   }));
   get props() {
     return this.#props();
@@ -1560,13 +1463,10 @@ function Separator($$payload, $$props) {
     ...restProps
   } = $$props;
   const rootState = useSeparatorRoot({
-    ref: box.with(
-      () => ref,
-      (v) => (ref = v),
-    ),
+    ref: box.with(() => ref, (v) => ref = v),
     id: box.with(() => id),
     decorative: box.with(() => decorative),
-    orientation: box.with(() => orientation),
+    orientation: box.with(() => orientation)
   });
   const mergedProps = mergeProps(restProps, rootState.props);
   if (child) {
@@ -1589,21 +1489,18 @@ function Dialog($$payload, $$props) {
     open = false,
     onOpenChange = noop,
     controlledOpen = false,
-    children,
+    children
   } = $$props;
   useDialogRoot({
     variant: box.with(() => "dialog"),
-    open: box.with(
-      () => open,
-      (v) => {
-        if (controlledOpen) {
-          onOpenChange(v);
-        } else {
-          open = v;
-          onOpenChange(v);
-        }
-      },
-    ),
+    open: box.with(() => open, (v) => {
+      if (controlledOpen) {
+        onOpenChange(v);
+      } else {
+        open = v;
+        onOpenChange(v);
+      }
+    })
   });
   children?.($$payload);
   $$payload.out += `<!---->`;
@@ -1625,11 +1522,8 @@ function Dialog_close($$payload, $$props) {
   const closeState = useDialogClose({
     variant: box.with(() => "close"),
     id: box.with(() => id),
-    ref: box.with(
-      () => ref,
-      (v) => (ref = v),
-    ),
-    disabled: box.with(() => Boolean(disabled)),
+    ref: box.with(() => ref, (v) => ref = v),
+    disabled: box.with(() => Boolean(disabled))
   });
   const mergedProps = mergeProps(restProps, closeState.props);
   if (child) {
@@ -1666,143 +1560,119 @@ function Dialog_content($$payload, $$props) {
   } = $$props;
   const contentState = useDialogContent({
     id: box.with(() => id),
-    ref: box.with(
-      () => ref,
-      (v) => (ref = v),
-    ),
+    ref: box.with(() => ref, (v) => ref = v)
   });
   const mergedProps = mergeProps(restProps, contentState.props);
   {
-    let presence = function ($$payload2, { present }) {
+    let presence = function($$payload2, { present }) {
       {
-        let focusScope = function ($$payload3, { props: focusScopeProps }) {
-          Escape_layer(
-            $$payload3,
-            spread_props([
-              mergedProps,
-              {
-                enabled: present.current,
-                onEscapeKeydown: (e) => {
-                  onEscapeKeydown(e);
-                  if (e.defaultPrevented) return;
-                  contentState.root.handleClose();
-                },
-                children: ($$payload4) => {
-                  Dismissible_layer(
-                    $$payload4,
-                    spread_props([
-                      mergedProps,
-                      {
-                        enabled: present.current,
-                        onInteractOutside: (e) => {
-                          onInteractOutside(e);
-                          if (e.defaultPrevented) return;
-                          contentState.root.handleClose();
-                        },
-                        children: ($$payload5) => {
-                          Text_selection_layer(
-                            $$payload5,
-                            spread_props([
-                              mergedProps,
-                              {
-                                enabled: present.current,
-                                children: ($$payload6) => {
-                                  if (child) {
-                                    $$payload6.out += "<!--[-->";
-                                    if (contentState.root.open.current) {
-                                      $$payload6.out += "<!--[-->";
-                                      Scroll_lock($$payload6, {
-                                        preventScroll,
-                                        restoreScrollDelay,
-                                      });
-                                    } else {
-                                      $$payload6.out += "<!--[!-->";
-                                    }
-                                    $$payload6.out += `<!--]--> `;
-                                    child($$payload6, {
-                                      props: mergeProps(
-                                        mergedProps,
-                                        focusScopeProps,
-                                      ),
-                                      ...contentState.snippetProps,
-                                    });
-                                    $$payload6.out += `<!---->`;
-                                  } else {
-                                    $$payload6.out += "<!--[!-->";
-                                    Scroll_lock($$payload6, { preventScroll });
-                                    $$payload6.out += `<!----> <div${spread_attributes(
-                                      {
-                                        ...mergeProps(
-                                          mergedProps,
-                                          focusScopeProps,
-                                        ),
-                                      },
-                                    )}>`;
-                                    children?.($$payload6);
-                                    $$payload6.out += `<!----></div>`;
-                                  }
-                                  $$payload6.out += `<!--]-->`;
-                                },
-                                $$slots: { default: true },
-                              },
-                            ]),
-                          );
-                        },
-                        $$slots: { default: true },
-                      },
-                    ]),
-                  );
-                },
-                $$slots: { default: true },
-              },
-            ]),
-          );
-        };
-        Focus_scope(
-          $$payload2,
-          spread_props([
-            {
-              loop: true,
-              trapFocus: shouldTrapFocus({
-                forceMount,
-                present: present.current,
-                trapFocus,
-                open: contentState.root.open.current,
-              }),
-            },
+        let focusScope = function($$payload3, { props: focusScopeProps }) {
+          Escape_layer($$payload3, spread_props([
             mergedProps,
             {
-              onCloseAutoFocus: (e) => {
-                onCloseAutoFocus(e);
+              enabled: present.current,
+              onEscapeKeydown: (e) => {
+                onEscapeKeydown(e);
                 if (e.defaultPrevented) return;
-                contentState.root.triggerNode?.focus();
+                contentState.root.handleClose();
               },
-              focusScope,
-              $$slots: { focusScope: true },
+              children: ($$payload4) => {
+                Dismissible_layer($$payload4, spread_props([
+                  mergedProps,
+                  {
+                    enabled: present.current,
+                    onInteractOutside: (e) => {
+                      onInteractOutside(e);
+                      if (e.defaultPrevented) return;
+                      contentState.root.handleClose();
+                    },
+                    children: ($$payload5) => {
+                      Text_selection_layer($$payload5, spread_props([
+                        mergedProps,
+                        {
+                          enabled: present.current,
+                          children: ($$payload6) => {
+                            if (child) {
+                              $$payload6.out += "<!--[-->";
+                              if (contentState.root.open.current) {
+                                $$payload6.out += "<!--[-->";
+                                Scroll_lock($$payload6, { preventScroll, restoreScrollDelay });
+                              } else {
+                                $$payload6.out += "<!--[!-->";
+                              }
+                              $$payload6.out += `<!--]--> `;
+                              child($$payload6, {
+                                props: mergeProps(mergedProps, focusScopeProps),
+                                ...contentState.snippetProps
+                              });
+                              $$payload6.out += `<!---->`;
+                            } else {
+                              $$payload6.out += "<!--[!-->";
+                              Scroll_lock($$payload6, { preventScroll });
+                              $$payload6.out += `<!----> <div${spread_attributes(
+                                {
+                                  ...mergeProps(mergedProps, focusScopeProps)
+                                }
+                              )}>`;
+                              children?.($$payload6);
+                              $$payload6.out += `<!----></div>`;
+                            }
+                            $$payload6.out += `<!--]-->`;
+                          },
+                          $$slots: { default: true }
+                        }
+                      ]));
+                    },
+                    $$slots: { default: true }
+                  }
+                ]));
+              },
+              $$slots: { default: true }
+            }
+          ]));
+        };
+        Focus_scope($$payload2, spread_props([
+          {
+            loop: true,
+            trapFocus: shouldTrapFocus({
+              forceMount,
+              present: present.current,
+              trapFocus,
+              open: contentState.root.open.current
+            })
+          },
+          mergedProps,
+          {
+            onCloseAutoFocus: (e) => {
+              onCloseAutoFocus(e);
+              if (e.defaultPrevented) return;
+              contentState.root.triggerNode?.focus();
             },
-          ]),
-        );
+            focusScope,
+            $$slots: { focusScope: true }
+          }
+        ]));
       }
     };
-    Presence_layer(
-      $$payload,
-      spread_props([
-        mergedProps,
-        {
-          forceMount,
-          present: contentState.root.open.current || forceMount,
-          presence,
-          $$slots: { presence: true },
-        },
-      ]),
-    );
+    Presence_layer($$payload, spread_props([
+      mergedProps,
+      {
+        forceMount,
+        present: contentState.root.open.current || forceMount,
+        presence,
+        $$slots: { presence: true }
+      }
+    ]));
   }
   bind_props($$props, { ref });
   pop();
 }
 function Cardano_wallet($$payload, $$props) {
   push();
-  const { label = "Connect Wallet", isDark = true } = $$props;
+  const {
+    label = "Connect Wallet",
+    isDark = true
+  } = $$props;
   let availableWallets = [];
   let dialogOpen = false;
   let $$settled = true;
@@ -1826,7 +1696,7 @@ function Cardano_wallet($$payload, $$props) {
             children: ($$payload4) => {
               $$payload4.out += `<!---->${escape_html(label)}`;
             },
-            $$slots: { default: true },
+            $$slots: { default: true }
           });
           $$payload3.out += `<!---->`;
         }
@@ -1835,7 +1705,7 @@ function Cardano_wallet($$payload, $$props) {
           children: ($$payload4) => {
             $$payload4.out += `<!---->`;
             Dialog_overlay($$payload4, {
-              class: "mesh-fixed mesh-inset-0 mesh-z-50 mesh-bg-black/80",
+              class: "mesh-fixed mesh-inset-0 mesh-z-50 mesh-bg-black/80"
             });
             $$payload4.out += `<!----> <!---->`;
             Dialog_content($$payload4, {
@@ -1844,54 +1714,47 @@ function Cardano_wallet($$payload, $$props) {
                 const each_array = ensure_array_like(availableWallets);
                 $$payload5.out += `<!---->`;
                 Dialog_title($$payload5, {
-                  class:
-                    "mesh-flex mesh-w-full mesh-items-center mesh-justify-center mesh-text-lg mesh-font-semibold mesh-tracking-tight",
+                  class: "mesh-flex mesh-w-full mesh-items-center mesh-justify-center mesh-text-lg mesh-font-semibold mesh-tracking-tight",
                   children: ($$payload6) => {
                     $$payload6.out += `<!---->Create API key`;
                   },
-                  $$slots: { default: true },
+                  $$slots: { default: true }
                 });
                 $$payload5.out += `<!----> <!---->`;
                 Separator($$payload5, {
-                  class: `mesh-mx-10 mesh-mb-6 mesh-mt-5 mesh-block mesh-h-px ${isDark === true ? "mesh-bg-neutral-50" : "mesh-bg-neutral-950"}`,
+                  class: `mesh-mx-10 mesh-mb-6 mesh-mt-5 mesh-block mesh-h-px ${isDark === true ? "mesh-bg-neutral-50" : "mesh-bg-neutral-950"}`
                 });
                 $$payload5.out += `<!----> <!---->`;
                 Dialog_description($$payload5, {
-                  class:
-                    "mesh-text-sm mesh-text-center mesh-text-foreground-alt",
+                  class: "mesh-text-sm mesh-text-center mesh-text-foreground-alt",
                   children: ($$payload6) => {
                     $$payload6.out += `<!---->Securely Connect your Cardano Wallet.`;
                   },
-                  $$slots: { default: true },
+                  $$slots: { default: true }
                 });
                 $$payload5.out += `<!----> <div class="mesh-grid mesh-gap-4 mesh-grid-cols-2 mesh-mt-5 mesh-mb-5 mesh-place-items-center"><!--[-->`;
-                for (
-                  let $$index = 0, $$length = each_array.length;
-                  $$index < $$length;
-                  $$index++
-                ) {
+                for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
                   let wallet = each_array[$$index];
                   $$payload5.out += `<img class="mesh-w-32 mesh-h-32 hover:mesh-cursor-pointer"${attr("alt", wallet.name + " icon")}${attr("src", wallet.icon)}>`;
                 }
                 $$payload5.out += `<!--]--></div> <!---->`;
                 Dialog_close($$payload5, {
-                  class:
-                    "mesh-absolute mesh-right-5 mesh-top-5 mesh-rounded-md focus-visible:mesh-outline-none focus-visible:mesh-ring-2 focus-visible:mesh-ring-foreground focus-visible:mesh-ring-offset-2 focus-visible:mesh-ring-offset-background active:mesh-scale-98",
+                  class: "mesh-absolute mesh-right-5 mesh-top-5 mesh-rounded-md focus-visible:mesh-outline-none focus-visible:mesh-ring-2 focus-visible:mesh-ring-foreground focus-visible:mesh-ring-offset-2 focus-visible:mesh-ring-offset-background active:mesh-scale-98",
                   children: ($$payload6) => {
                     $$payload6.out += `<div><span>Close</span></div>`;
                   },
-                  $$slots: { default: true },
+                  $$slots: { default: true }
                 });
                 $$payload5.out += `<!---->`;
               },
-              $$slots: { default: true },
+              $$slots: { default: true }
             });
             $$payload4.out += `<!---->`;
-          },
+          }
         });
         $$payload3.out += `<!---->`;
       },
-      $$slots: { default: true },
+      $$slots: { default: true }
     });
     $$payload2.out += `<!---->`;
   }
@@ -1908,32 +1771,27 @@ function LearnMore($$payload) {
     {
       title: "TypeScript + Effect",
       url: "https://effect.website/",
-      description:
-        "Official Effect guide for functional TypeScript programming.",
+      description: "Official Effect guide for functional TypeScript programming."
     },
     {
       title: "Learn Svelte",
       url: "https://learn.svelte.dev",
-      description: "Interactive Svelte tutorial by the core team.",
+      description: "Interactive Svelte tutorial by the core team."
     },
     {
       title: "Learn Mesh SDK",
       url: "https://meshjs.dev/",
-      description: "Guides for building dApps on Cardano with Mesh.",
+      description: "Guides for building dApps on Cardano with Mesh."
     },
     {
       title: "Learn Nix Flakes",
       url: "https://zero-to-nix.com/",
-      description: "NixOS Wiki: everything you need to know about flakes.",
-    },
+      description: "NixOS Wiki: everything you need to know about flakes."
+    }
   ];
   const each_array = ensure_array_like(links);
   $$payload.out += `<div class="mesh-text-white mesh-bg-gray-900 mesh-p-10 mesh-min-h-screen"><h1 class="mesh-text-4xl mesh-font-bold mesh-mb-8">\u{1F4DA} Learn More</h1> <div class="mesh-grid mesh-gap-6 mesh-grid-cols-1 md:mesh-grid-cols-2"><!--[-->`;
-  for (
-    let $$index = 0, $$length = each_array.length;
-    $$index < $$length;
-    $$index++
-  ) {
+  for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
     let { title, url, description } = each_array[$$index];
     $$payload.out += `<a class="mesh-block mesh-bg-gray-800 mesh-rounded-lg mesh-p-5 mesh-border mesh-border-gray-600 hover:mesh-border-sky-500 hover:mesh-scale-105 mesh-transition"${attr("href", url)} target="_blank" rel="noopener noreferrer"><h2 class="mesh-text-xl mesh-font-semibold mesh-mb-2">${escape_html(title)}</h2> <p class="mesh-text-gray-400">${escape_html(description)}</p></a>`;
   }
@@ -1950,7 +1808,9 @@ function _page($$payload, $$props) {
   {
     $$payload.out += "<!--[!-->";
   }
-  $$payload.out += `<!--]--></div> <div class="grid md:grid-cols-3 gap-4"><a href="https://meshjs.dev/apis" class="bg-white rounded-lg shadow p-4 hover:ring-2 ring-blue-500 transition"><h2 class="text-xl font-semibold mb-2">Documentation</h2> <p>Our documentation provides live demos and code samples \u2014 a great tool for learning how Cardano works.</p></a> <a href="https://meshjs.dev/guides" class="bg-white rounded-lg shadow p-4 hover:ring-2 ring-blue-500 transition"><h2 class="text-xl font-semibold mb-2">Guides</h2> <p>Launching a new NFT project or store? These guides will help you get started quickly.</p></a> <a href="https://meshjs.dev/svelte" class="bg-white rounded-lg shadow p-4 hover:ring-2 ring-blue-500 transition"><h2 class="text-xl font-semibold mb-2">Svelte Components</h2> <p>Integrate Mesh's Svelte UI components to enhance your Cardano dApp experience.</p></a></div></main> <footer class="text-center text-sm text-gray-500 mt-12">\xA9 ${escape_html(/* @__PURE__ */ new Date().getFullYear())} Zoofpay</footer></div>`;
+  $$payload.out += `<!--]--></div> <div class="grid md:grid-cols-3 gap-4"><a href="https://meshjs.dev/apis" class="bg-white rounded-lg shadow p-4 hover:ring-2 ring-blue-500 transition"><h2 class="text-xl font-semibold mb-2">Documentation</h2> <p>Our documentation provides live demos and code samples \u2014 a great tool for learning how Cardano works.</p></a> <a href="https://meshjs.dev/guides" class="bg-white rounded-lg shadow p-4 hover:ring-2 ring-blue-500 transition"><h2 class="text-xl font-semibold mb-2">Guides</h2> <p>Launching a new NFT project or store? These guides will help you get started quickly.</p></a> <a href="https://meshjs.dev/svelte" class="bg-white rounded-lg shadow p-4 hover:ring-2 ring-blue-500 transition"><h2 class="text-xl font-semibold mb-2">Svelte Components</h2> <p>Integrate Mesh's Svelte UI components to enhance your Cardano dApp experience.</p></a></div></main> <footer class="text-center text-sm text-gray-500 mt-12">\xA9 ${escape_html((/* @__PURE__ */ new Date()).getFullYear())} Zoofpay</footer></div>`;
   pop();
 }
-export { _page as default };
+export {
+  _page as default
+};

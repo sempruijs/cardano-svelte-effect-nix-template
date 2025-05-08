@@ -4,4 +4,6 @@ function _layout($$payload, $$props) {
   children($$payload);
   $$payload.out += `<!---->`;
 }
-export { _layout as default };
+export {
+  _layout as default
+};
