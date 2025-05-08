@@ -7,25 +7,25 @@ Cardano Svelte Effect Nix Template
 A fully reproducible, Nix-powered template integrating Svelte and Effect, tailored for building Cardano-related applications with a modern frontend stack. ￼
 
 🚀 Features
-	•	Reproducible Builds: Leverages Nix flakes to ensure consistent builds across environments.
-	•	Svelte Integration: Utilizes Svelte for a reactive and efficient frontend experience.
-	•	Effect Integration: Incorporates the Effect library for robust functional programming capabilities.
-	•	Cardano Compatibility: Pre-configured to facilitate development of Cardano-centric applications.
-	•	Development Environment: Provides a comprehensive dev shell with essential tools.
-	•	Testing Suite: Includes Vitest for unit and integration testing.
-	•	Code Formatting: Employs Prettier and nixpkgs-fmt for consistent code styling. ￼ ￼
+• Reproducible Builds: Leverages Nix flakes to ensure consistent builds across environments.
+• Svelte Integration: Utilizes Svelte for a reactive and efficient frontend experience.
+• Effect Integration: Incorporates the Effect library for robust functional programming capabilities.
+• Cardano Compatibility: Pre-configured to facilitate development of Cardano-centric applications.
+• Development Environment: Provides a comprehensive dev shell with essential tools.
+• Testing Suite: Includes Vitest for unit and integration testing.
+• Code Formatting: Employs Prettier and nixpkgs-fmt for consistent code styling. ￼ ￼
 
 🧰 Getting Started
 
 Prerequisites
 
 Ensure you have the following installed:
-	•	Nix with experimental features enabled:
+• Nix with experimental features enabled:
 
-  mkdir -p ~/.config/nix
-  echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+mkdir -p ~/.config/nix
+echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
 
-	•	Direnv (optional but recommended for environment management)
+    •	Direnv (optional but recommended for environment management)
 
 Initialization
 
@@ -44,12 +44,12 @@ To enter a development environment with all necessary tools: ￼
 nix develop
 
 This shell includes: ￼
-	•	Node.js and npm
-	•	TypeScript
-	•	Svelte Language Server
-	•	Tailwind CSS Language Server
-	•	Prettier
-	•	Vitest ￼
+• Node.js and npm
+• TypeScript
+• Svelte Language Server
+• Tailwind CSS Language Server
+• Prettier
+• Vitest ￼
 
 Running the Development Server
 
@@ -90,8 +90,8 @@ To format the codebase: ￼
 nix fmt
 
 This command formats: ￼
-	•	TypeScript, JavaScript, JSON, Markdown, Svelte, HTML, and CSS files using Prettier
-	•	Nix files using nixpkgs-fmt ￼
+• TypeScript, JavaScript, JSON, Markdown, Svelte, HTML, and CSS files using Prettier
+• Nix files using nixpkgs-fmt ￼
 
 📄 License
 
@@ -102,5 +102,3 @@ This project is licensed under the Apache-2.0 License.
 For more details and updates, visit the GitHub repository.
 
 ⸻
-
-
