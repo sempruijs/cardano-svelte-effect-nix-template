@@ -1,3 +1,2 @@
-# Starter SvelteKit TypeScript
+# builds dApps on cardano
 
-Start a new project on SvelteKit. This starter template consists of a connect wallet button and wallet integration.
