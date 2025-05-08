@@ -41,36 +41,46 @@
     });
 </script>
 
-<div class="bg-red-200 min-h-screen bg-gray-100 text-gray-900 p-6">
-    <main class="max-w-4xl mx-auto space-y-8">
-        <h1 class="text-3xl font-bold text-center text-blue-600">
-            🎉 Congratulations
-        </h1>
+<div class="">
+    <main class="">
+        <div class="bg-black text-center p-20">
+            <h1 class="text-6xl p-5">
+                🎉 Congratulations
+            </h1>
+            <p>You've successfully setup this template</p>
+        </div>
 
-        <div class="space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-10 m-5">
+          <div class="bg-gray-700 border-10 border-gray-600 rounded-3xl p-5">
             <CardanoWallet isDark={true} />
             <button
-                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                class=""
                 onclick={send_ada}
             >
                 Send 1 ADA
             </button>
-            <LearnMore />
+          </div>
+          <div class="bg-black p-4">
+              <LearnMore />
+          </div>
+        </div>
+
+        <div class="">
 
             {#if BrowserWalletState.connected}
                 <UtxoView utxos={state.utxos} />
-                <p class="text-green-600 font-medium">
+                <p class="">
                     ✅ Browser Wallet {BrowserWalletState.name} is connected!
                 </p>
             {/if}
         </div>
 
-        <div class="grid md:grid-cols-3 gap-4">
+        <div class="">
             <a
                 href="https://meshjs.dev/apis"
-                class="bg-white rounded-lg shadow p-4 hover:ring-2 ring-blue-500 transition"
+                class=""
             >
-                <h2 class="text-xl font-semibold mb-2">Documentation</h2>
+                <h2 class="">Documentation</h2>
                 <p>
                     Our documentation provides live demos and code samples — a great tool for learning how Cardano works.
                 </p>
@@ -78,9 +88,9 @@
 
             <a
                 href="https://meshjs.dev/guides"
-                class="bg-white rounded-lg shadow p-4 hover:ring-2 ring-blue-500 transition"
+                class=""
             >
-                <h2 class="text-xl font-semibold mb-2">Guides</h2>
+                <h2 class="">Guides</h2>
                 <p>
                     Launching a new NFT project or store? These guides will help you get started quickly.
                 </p>
@@ -88,9 +98,9 @@
 
             <a
                 href="https://meshjs.dev/svelte"
-                class="bg-white rounded-lg shadow p-4 hover:ring-2 ring-blue-500 transition"
+                class=""
             >
-                <h2 class="text-xl font-semibold mb-2">Svelte Components</h2>
+                <h2 class="">Svelte Components</h2>
                 <p>
                     Integrate Mesh's Svelte UI components to enhance your Cardano dApp experience.
                 </p>
@@ -98,7 +108,7 @@
         </div>
     </main>
 
-    <footer class="text-center text-sm text-gray-500 mt-12">
+    <footer class="">
         &copy; {new Date().getFullYear()} Zoofpay
     </footer>
 </div>
