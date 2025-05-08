@@ -51,7 +51,7 @@
             <CardanoWallet isDark={true} />
             <button
                 class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-                on:click={send_ada}
+                onclick={send_ada}
             >
                 Send 1 ADA
             </button>
