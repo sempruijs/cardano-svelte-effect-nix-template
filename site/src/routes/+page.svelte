@@ -3,6 +3,7 @@
     import { Effect } from 'effect';
     import LearnMore from '$lib/components/LearnMore.svelte';
     import type { Utxo } from "$lib/types";
+    import ConnectWallet from "$lib/components/ConnectWallet.svelte";
     import { Option } from "effect";
     import { getUtxos } from "$lib/wallet/getUtxos";
     import UtxoView from "$lib/components/UtxoView.svelte";
@@ -52,13 +53,14 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-10 m-5">
           <div class="bg-gray-700 border-10 border-gray-600 rounded-3xl p-5">
-            <CardanoWallet isDark={true} />
-            <button
-                class=""
-                onclick={send_ada}
-            >
-                Send 1 ADA
-            </button>
+            <!-- <CardanoWallet isDark={true} />
+                <button
+                 class=""
+                 onclick={send_ada}
+             >
+                 Send 1 ADA
+             </button> -->
+            <ConnectWallet />
           </div>
           <div class="bg-black p-4">
               <LearnMore />
@@ -75,37 +77,6 @@
             {/if}
         </div>
 
-        <div class="">
-            <a
-                href="https://meshjs.dev/apis"
-                class=""
-            >
-                <h2 class="">Documentation</h2>
-                <p>
-                    Our documentation provides live demos and code samples — a great tool for learning how Cardano works.
-                </p>
-            </a>
-
-            <a
-                href="https://meshjs.dev/guides"
-                class=""
-            >
-                <h2 class="">Guides</h2>
-                <p>
-                    Launching a new NFT project or store? These guides will help you get started quickly.
-                </p>
-            </a>
-
-            <a
-                href="https://meshjs.dev/svelte"
-                class=""
-            >
-                <h2 class="">Svelte Components</h2>
-                <p>
-                    Integrate Mesh's Svelte UI components to enhance your Cardano dApp experience.
-                </p>
-            </a>
-        </div>
     </main>
 
     <footer class="">
