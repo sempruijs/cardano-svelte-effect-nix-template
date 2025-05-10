@@ -4,7 +4,6 @@
   import { connectedWallet } from "../../stores/wallet";
 
   let availableWallets: Wallet[] = [];
-  let selectedWallet: Wallet | null = null;
   let walletBalance: string | null = null;
   let isDialogOpen = false;
 
@@ -23,7 +22,6 @@
 
   async function selectWallet(name: string) {
     const wallet: BrowserWallet = await BrowserWallet.enable(name);
-    selectedWallet = wallet;
     connectedWallet.set(wallet);
 
     const utxos = await wallet.getUtxos();
@@ -37,7 +35,6 @@
   }
 
   function disconnectWallet() {
-    selectedWallet = null;
     connectedWallet.set(null);
     walletBalance = null;
     closeDialog();
@@ -53,7 +50,7 @@
 <!-- Trigger Button -->
 <button
   class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-  on:click={openDialog}
+  onclick={openDialog}
 >
   {#if walletBalance}
     Balance: {walletBalance}
@@ -67,14 +64,14 @@
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
     <div class="bg-black p-6 rounded-xl shadow-lg w-full max-w-md space-y-6 text-white">
       <h2 class="text-xl font-bold">
-        {#if selectedWallet}
+        {#if $connectedWallet}
           Connected Wallet
         {:else}
           Select a Wallet
         {/if}
       </h2>
 
-      {#if selectedWallet}
+      {#if $connectedWallet}
         <!-- Show wallet info and disconnect button -->
         <div class="space-y-4">
           <p class="text-sm">Connected to <strong>{$connectedWallet?._walletName}</strong></p>
@@ -82,13 +79,13 @@
           <div class="flex justify-end space-x-2">
             <button
               class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
-              on:click={disconnectWallet}
+              onclick={disconnectWallet}
             >
               Disconnect
             </button>
             <button
               class="px-3 py-1 text-gray-300 hover:text-white"
-              on:click={closeDialog}
+              onclick={closeDialog}
             >
               Close
             </button>
@@ -105,7 +102,7 @@
               </div>
               <button
                 class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-                on:click={() => selectWallet(wallet.name)}
+                onclick={() => selectWallet(wallet.name)}
               >
                 Connect
               </button>
@@ -116,7 +113,7 @@
         <div class="flex justify-end">
           <button
             class="mt-4 px-3 py-1 text-gray-300 hover:text-white"
-            on:click={closeDialog}
+            onclick={closeDialog}
           >
             Cancel
           </button>
