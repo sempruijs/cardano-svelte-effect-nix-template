@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { BrowserWallet, type Wallet } from "@meshsdk/core";
+  import { connectedWallet } from "../../stores/wallet";
 
   let availableWallets: Wallet[] = [];
   let selectedWallet: Wallet | null = null;
@@ -23,6 +24,7 @@
   async function selectWallet(name: string) {
     const wallet: BrowserWallet = await BrowserWallet.enable(name);
     selectedWallet = wallet;
+    connectedWallet.set(wallet);
 
     const utxos = await wallet.getUtxos();
     const balanceLovelace = utxos.reduce((acc, utxo) => {
@@ -36,6 +38,7 @@
 
   function disconnectWallet() {
     selectedWallet = null;
+    connectedWallet.set(null);
     walletBalance = null;
     closeDialog();
   }
@@ -74,7 +77,7 @@
       {#if selectedWallet}
         <!-- Show wallet info and disconnect button -->
         <div class="space-y-4">
-          <p class="text-sm">Connected to <strong>{selectedWallet.name}</strong></p>
+          <p class="text-sm">Connected to <strong>{$connectedWallet?._walletName}</strong></p>
           <p class="text-sm">Balance: {walletBalance}</p>
           <div class="flex justify-end space-x-2">
             <button
