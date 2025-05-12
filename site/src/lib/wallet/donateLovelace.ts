@@ -5,27 +5,43 @@ import { MeshTxBuilder } from "@meshsdk/core";
 export function donateLovelace(
   wallet: BrowserWallet,
   lovelace: string,
-): Effect.Effect<String, Error, never> {
-  return Effect.tryPromise({
-    try: async () => {
-      const utxos = await wallet.getUtxos();
-      const changeAddress = await wallet.getChangeAddress();
+): Effect.Effect<string, Error> {
+  return Effect.gen(function* (_) {
+    const utxos = yield* _(Effect.tryPromise({
+      try: () => wallet.getUtxos(),
+      catch: (e) => new Error("Failed to get UTXOs: " + String(e)),
+    }));
 
-      const txBuilder = new MeshTxBuilder();
+    const changeAddress = yield* _(Effect.tryPromise({
+      try: () => wallet.getChangeAddress(),
+      catch: (e) => new Error("Failed to get change address: " + String(e)),
+    }));
 
-      const unsignedTx = await txBuilder
-        .txOut(
-          "addr1qyvt4enyyra4ss3q7qugzwf60r8lxggj8tvdd356pj5ez93024gfv5ckw0h2vg0t64ww3aep2gljy3nyyjrgs2ua0e4smx5sxa",
-          [{ unit: "lovelace", quantity: lovelace }],
-        )
-        .changeAddress(changeAddress)
-        .selectUtxosFrom(utxos)
-        .complete();
+    const txBuilder = new MeshTxBuilder();
 
-      const signedTx = await wallet.signTx(unsignedTx);
-      const txHash = await wallet.submitTx(signedTx);
-      return txHash;
-    },
-    catch: (e) => new Error("Failed to send lovelace: " + String(e)),
+    const unsignedTx = yield* _(Effect.tryPromise({
+      try: () =>
+        txBuilder
+          .txOut(
+            "addr1qyvt4enyyra4ss3q7qugzwf60r8lxggj8tvdd356pj5ez93024gfv5ckw0h2vg0t64ww3aep2gljy3nyyjrgs2ua0e4smx5sxa",
+            [{ unit: "lovelace", quantity: lovelace }],
+          )
+          .changeAddress(changeAddress)
+          .selectUtxosFrom(utxos)
+          .complete(),
+      catch: (e) => new Error("Failed to build transaction: " + String(e)),
+    }));
+
+    const signedTx = yield* _(Effect.tryPromise({
+      try: () => wallet.signTx(unsignedTx),
+      catch: (e) => new Error("Failed to sign transaction: " + String(e)),
+    }));
+
+    const txHash = yield* _(Effect.tryPromise({
+      try: () => wallet.submitTx(signedTx),
+      catch: (e) => new Error("Failed to submit transaction: " + String(e)),
+    }));
+
+    return txHash;
   });
 }

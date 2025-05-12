@@ -4,7 +4,10 @@ import type { Utxo } from "./types"
 
 export class Wallet extends Context.Tag("Wallet")<
   Wallet,
-  { readonly getUtxos: Effect.Effect<Utxo[], Error> }
+  {
+    readonly getUtxos: Effect.Effect<Utxo[], Error>,
+    readonly getChangeAddress: Effect.Effect<string, Error>
+  }
 >() {}
 
 export function provideWallet(wallet: BrowserWallet) {
@@ -12,6 +15,10 @@ export function provideWallet(wallet: BrowserWallet) {
     getUtxos: Effect.tryPromise({
       try: async () => await wallet.getUtxos(),
       catch: (e) => new Error(`Failed to fetch UTXOs: ${String(e)}`)
+    }),
+    getChangeAddress: Effect.tryPromise({
+      try: async () => await wallet.getChangeAddress(),
+      catch: (e) => new Error(`Failed to fetch change address: ${String(e)}`)
     })
   })
 }
