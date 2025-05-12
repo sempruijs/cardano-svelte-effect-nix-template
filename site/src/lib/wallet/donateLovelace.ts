@@ -1,16 +1,15 @@
 import { Effect } from "effect";
 import type { BrowserWallet } from "@meshsdk/core";
 import { MeshTxBuilder } from "@meshsdk/core";
+import { Wallet } from "$lib/wallet";
 
 export function donateLovelace(
   wallet: BrowserWallet,
   lovelace: string,
-): Effect.Effect<string, Error> {
+): Effect.Effect<string, Error, Wallet> {
   return Effect.gen(function* (_) {
-    const utxos = yield* _(Effect.tryPromise({
-      try: () => wallet.getUtxos(),
-      catch: (e) => new Error("Failed to get UTXOs: " + String(e)),
-    }));
+    const w = yield* _(Wallet);
+    const utxos = yield* _(w.getUtxos);
 
     const changeAddress = yield* _(Effect.tryPromise({
       try: () => wallet.getChangeAddress(),
