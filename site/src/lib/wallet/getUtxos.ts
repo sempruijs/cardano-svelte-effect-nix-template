@@ -1,15 +1,10 @@
 import { Effect } from "effect";
-import type { BrowserWallet } from "@meshsdk/core";
 import type { Utxo } from "../types";
+import { Wallet } from "$lib/wallet"; 
 
-export function getUtxos(
-  wallet: BrowserWallet,
-): Effect.Effect<Utxo[], Error, never> {
-  return Effect.tryPromise({
-    try: async () => {
-      const utxos = await wallet.getUtxos();
-      return utxos as Utxo[];
-    },
-    catch: (e) => new Error("Failed to fetch UTXOs: " + String(e)),
-  });
+export function getUtxos(): Effect.Effect<Utxo[], Error, Wallet> {
+  return Effect.gen(function* () {
+    const wallet = yield* Wallet
+    return yield* wallet.getUtxos
+  })
 }
