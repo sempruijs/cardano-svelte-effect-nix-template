@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Effect } from 'effect';
     import LearnMore from '$lib/components/LearnMore.svelte';
+    import { provideWallet } from '$lib/wallet';
     import type { Utxo } from "$lib/types";
     import ConnectWallet from "$lib/components/ConnectWallet.svelte";
     import { Option } from "effect";
@@ -24,7 +25,7 @@
 
     $effect(() => {
         if ($connectedWallet) {
-            Effect.runPromise(getUtxos($connectedWallet))
+            Effect.runPromise(provideWallet($connectedWallet)(getUtxos()))
               .then(result => {
                 state.utxos = result;
                 console.log(result);
