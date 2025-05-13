@@ -10,11 +10,7 @@ export function donateLovelace(
   return Effect.gen(function* (_) {
     const w = yield* _(Wallet);
     const utxos = yield* _(w.getUtxos);
-
-    const changeAddress = yield* _(Effect.tryPromise({
-      try: () => wallet.getChangeAddress(),
-      catch: (e) => new Error("Failed to get change address: " + String(e)),
-    }));
+    const changeAddress = yield* _(w.getChangeAddress)
 
     const txBuilder = new MeshTxBuilder();
 
@@ -31,10 +27,7 @@ export function donateLovelace(
       catch: (e) => new Error("Failed to build transaction: " + String(e)),
     }));
 
-    const signedTx = yield* _(Effect.tryPromise({
-      try: () => wallet.signTx(unsignedTx),
-      catch: (e) => new Error("Failed to sign transaction: " + String(e)),
-    }));
+    const signedTx = yield* _(w.signTx(unsignedTx));
 
     const txHash = yield* _(Effect.tryPromise({
       try: () => wallet.submitTx(signedTx),
