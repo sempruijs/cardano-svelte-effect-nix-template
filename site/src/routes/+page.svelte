@@ -12,7 +12,7 @@
 
     function send_ada() {
         if ($connectedWallet) {
-            Effect.runPromise(provideWallet($connectedWallet)(donateLovelace($connectedWallet, '1000000')))
+            Effect.runPromise(provideWallet($connectedWallet)(donateLovelace('1000000')))
               .then(result => {
                 state.txHash = Option.some(result);
               })
