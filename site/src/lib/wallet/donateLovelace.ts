@@ -4,7 +4,6 @@ import { MeshTxBuilder } from "@meshsdk/core";
 import { Wallet } from "$lib/wallet";
 
 export function donateLovelace(
-  wallet: BrowserWallet,
   lovelace: string,
 ): Effect.Effect<string, Error, Wallet> {
   return Effect.gen(function* (_) {
@@ -29,10 +28,7 @@ export function donateLovelace(
 
     const signedTx = yield* _(w.signTx(unsignedTx));
 
-    const txHash = yield* _(Effect.tryPromise({
-      try: () => wallet.submitTx(signedTx),
-      catch: (e) => new Error("Failed to submit transaction: " + String(e)),
-    }));
+    const txHash = _(w.submitTx(signedTx));
 
     return txHash;
   });

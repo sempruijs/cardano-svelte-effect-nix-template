@@ -7,7 +7,8 @@ export class Wallet extends Context.Tag("Wallet")<
   {
     readonly getUtxos: Effect.Effect<Utxo[], Error>,
     readonly getChangeAddress: Effect.Effect<string, Error>,
-    readonly signTx: (tx: string, partialSign?: boolean) => Effect.Effect<string, Error>
+    readonly signTx: (tx: string, partialSign?: boolean) => Effect.Effect<string, Error>,
+    readonly submitTx: (tx: string) => Effect.Effect<string, Error>
   }
 >() {}
 
@@ -25,6 +26,11 @@ export function provideWallet(wallet: BrowserWallet) {
       Effect.tryPromise({
         try: async () => await wallet.signTx(tx, partialSign),
         catch: (e) => new Error(`Failed to sign transaction: ${String(e)}`)
+      }),
+    submitTx: (tx: string) =>
+      Effect.tryPromise({
+        try: async () => await wallet.signTx(tx),
+        catch: (e) => new Error(`Failed to submit transaction: ${String(e)}`)
       }),
   });
 }
