@@ -7,20 +7,18 @@
     import { Option } from "effect";
     import { getUtxos } from "$lib/wallet/getUtxos";
     import UtxoView from "$lib/components/UtxoView.svelte";
-    import { donateLovelace } from "$lib/wallet/donateLovelace";
+    import { donateAda } from "$lib/wallet/donateAda";
     import { connectedWallet } from "../stores/wallet";
 
     function send_ada() {
-        if ($connectedWallet) {
-            Effect.runPromise(provideWallet($connectedWallet)(donateLovelace('1000000')))
-              .then(result => {
-                state.txHash = Option.some(result);
-              })
-              .catch(err => {
-                  console.log("error sending ADA");
-                  state.utxos = [];
-              });
-        }
+        Effect.runPromise(provideWallet($connectedWallet)(donateAda('1')))
+          .then(result => {
+            state.txHash = Option.some(result);
+          })
+          .catch(err => {
+              console.log("error sending ADA");
+              state.utxos = [];
+          });
     }
 
     $effect(() => {
@@ -78,8 +76,5 @@
         </div>
 
     </main>
-
-    <footer class="">
-        &copy; {new Date().getFullYear()} Zoofpay
-    </footer>
 </div>
+
