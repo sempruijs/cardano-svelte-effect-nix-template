@@ -7,19 +7,8 @@
     import { Option } from "effect";
     import { getUtxos } from "$lib/wallet/getUtxos";
     import UtxoView from "$lib/components/UtxoView.svelte";
-    import { donateAda } from "$lib/wallet/donateAda";
     import { connectedWallet } from "../stores/wallet";
-
-    function send_ada() {
-        Effect.runPromise(provideWallet($connectedWallet)(donateAda('1')))
-          .then(result => {
-            state.txHash = Option.some(result);
-          })
-          .catch(err => {
-              console.log("error sending ADA");
-              state.utxos = [];
-          });
-    }
+    import Donation from '$lib/components/donation.svelte';
 
     $effect(() => {
         if ($connectedWallet) {
@@ -53,12 +42,9 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-10 m-5">
           <div class="bg-gray-700 border-10 border-gray-600 rounded-3xl p-5">
             <ConnectWallet />
-            <button
-                class=""
-                onclick={send_ada}
-            >
-                Send 1 ADA
-            </button> 
+            {#if $connectedWallet}
+                <Donation />
+            {/if}
           </div>
           <div class="bg-black p-4">
               <LearnMore />
