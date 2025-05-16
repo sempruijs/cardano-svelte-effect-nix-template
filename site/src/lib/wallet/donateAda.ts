@@ -19,7 +19,7 @@ export function donateAda(
       try: () =>
         txBuilder
           .txOut(
-            "addr1qyvt4enyyra4ss3q7qugzwf60r8lxggj8tvdd356pj5ez93024gfv5ckw0h2vg0t64ww3aep2gljy3nyyjrgs2ua0e4smx5sxa",
+            "addr1q9cwxnl6v6th9n7mzhk293mfdsc6uac9hgkg2fjjf5fstjvccy2suwmp0ru23qyl8hudzrqraep3q8naq498flnhkxws5rh57s",
             [{ unit: "lovelace", quantity: lovelace }],
           )
           .changeAddress(changeAddress)
@@ -30,7 +30,7 @@ export function donateAda(
 
     const signedTx = yield* _(w.signTx(unsignedTx));
 
-    const txHash = _(w.submitTx(signedTx));
+    const txHash = yield* _(w.submitTx(signedTx));
 
     return txHash;
   });
