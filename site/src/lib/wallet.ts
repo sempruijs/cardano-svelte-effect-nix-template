@@ -29,7 +29,7 @@ export function provideWallet(wallet: BrowserWallet) {
       }),
     submitTx: (tx: string) =>
       Effect.tryPromise({
-        try: async () => await wallet.signTx(tx),
+        try: async () => await wallet.submitTx(tx),
         catch: (e) => new Error(`Failed to submit transaction: ${String(e)}`)
       }),
   });
