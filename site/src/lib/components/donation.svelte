@@ -3,12 +3,13 @@
   import { donateAda } from '$lib/wallet/donateAda';
   import { provideWallet } from '$lib/wallet';
   import { connectedWallet } from '../../stores/wallet';
+  import type { Utxo } from '$lib/types';
 
   const presetAmounts = ['5', '10', '25', '50', 'custom'];
 
   let state = $state({
     utxos: [] as Utxo[],
-    txHash: Option.none as Option.Option<string>,
+    explorerLink: Option.none,
     selected: '5',
     customAda: ''
   });
@@ -26,7 +27,7 @@
 
     Effect.runPromise(provideWallet($connectedWallet)(donateAda(amount)))
       .then((result) => {
-        state.txHash = Option.some(result);
+        state.explorerLink = Option.some(result);
       })
       .catch((err) => {
         console.log('error sending ₳', err);
@@ -75,9 +76,10 @@
     Send {state.selected === 'custom' ? `₳${state.customAda || '...'}` : `₳${state.selected}`}
   </button>
 
-  {#if Option.isSome(state.txHash)}
+  {#if Option.isSome(state.explorerLink)}
     <p class="text-green-600 text-sm text-center break-all mt-2">
-      ✅ Transaction sent! Tx hash: {state.txHash.value}
+      ✅ Transaction sent!
     </p>
+    <a href="{state.explorerLink.value}">view on explorer</a>
   {/if}
 </div>

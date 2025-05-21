@@ -40,7 +40,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-10 m-5">
-          <div class="bg-gray-700 border-10 border-gray-600 rounded-3xl p-5">
+          <div class="bg-gray-700 border-10 border-gray-600 rounded-3xl p-5 grid place-items-center">
             <ConnectWallet />
             {#if $connectedWallet}
                 <Donation />
@@ -55,9 +55,6 @@
 
             {#if connectedWallet}
                 <UtxoView utxos={state.utxos} />
-                <p class="">
-                    ✅ Browser Wallet {$connectedWallet?._walletName} is connected!
-                </p>
             {/if}
         </div>
 
