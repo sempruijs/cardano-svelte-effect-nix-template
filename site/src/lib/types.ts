@@ -1,7 +1,7 @@
 export type WalletInfo = {
-  name: String,
-  image: String,
-  version: String,
+  name: String;
+  image: String;
+  version: String;
 };
 
 export type Utxo = {

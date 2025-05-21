@@ -1,104 +1,81 @@
-Here’s a comprehensive README.md for your repository, cardano-svelte-effect-nix-template, highlighting its features and providing guidance on using it with Nix:
+# Cardano Svelte Effect Nix Template
 
-⸻
+Don't waste time setting up your development enviourment.
+Start building your dApp for cardano.
+You can visit [the website](https://sempruijs.github.io/cardano-svelte-effect-nix-template/) to see a working template.
 
-Cardano Svelte Effect Nix Template
+### Motivation
 
-A fully reproducible, Nix-powered template integrating Svelte and Effect, tailored for building Cardano-related applications with a modern frontend stack. ￼
+I saw [Cor's svelte effect nix template](https://github.com/cor/svelte-effect-nix-template) and it helped me getting started with svelte.
+I wanted to get started building dApps with meshjs but it was painful getting a working enviourment.
+After a long time fixing bugs that I did not want to fix I've thought lets make a template so that other cardano developers can build dApps faster.
 
-🚀 Features
-• Reproducible Builds: Leverages Nix flakes to ensure consistent builds across environments.
-• Svelte Integration: Utilizes Svelte for a reactive and efficient frontend experience.
-• Effect Integration: Incorporates the Effect library for robust functional programming capabilities.
-• Cardano Compatibility: Pre-configured to facilitate development of Cardano-centric applications.
-• Development Environment: Provides a comprehensive dev shell with essential tools.
-• Testing Suite: Includes Vitest for unit and integration testing.
-• Code Formatting: Employs Prettier and nixpkgs-fmt for consistent code styling. ￼ ￼
+## What's in the template?
 
-🧰 Getting Started
+- svelte as the framework
+- meshjs for interacting with cardano wallets
+- tailwindcss for easy css
+- typescript effect for writing robust typescript.
+- nix flakes for reproducable developer enviourment and builds.
+- github pages action for deployen the nix derivation as a static site.
 
-Prerequisites
+## Getting started
 
-Ensure you have the following installed:
-• Nix with experimental features enabled:
+Fork and clone the template.
 
-mkdir -p ~/.config/nix
-echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+### With Nix
 
-    •	Direnv (optional but recommended for environment management)
+The best way to use this template is with Nix flakes.
+Then you can:
 
-Initialization
+1. Enter a devshell
 
-To create a new project using this template:
-
-nix flake init -t github:sempruijs/cardano-svelte-effect-nix-template
-
-This command initializes a new Nix flake based on the template. ￼
-
-🛠️ Development
-
-Entering the Development Shell
-
-To enter a development environment with all necessary tools: ￼
-
+```bash
 nix develop
+```
 
-This shell includes: ￼
-• Node.js and npm
-• TypeScript
-• Svelte Language Server
-• Tailwind CSS Language Server
-• Prettier
-• Vitest ￼
+2. Run a dev server
 
-Running the Development Server
-
-To start the development server with hot module replacement: ￼
-
+```bash
 nix run .#dev
+```
 
-This will launch the Vite development server, typically accessible at http://localhost:5173.
+3. Build the app as a static website.
 
-🧪 Testing
-
-To execute the test suite:
-
-nix run .#test
-
-This runs all tests using Vitest, ensuring your application behaves as expected. ￼
-
-🏗️ Building
-
-To build the application for production:
-
+```bash
 nix build
+```
 
-The output will be located in the ./result directory. ￼
+4. Build the static website and preview the build on localhost:
 
-🌐 Previewing
-
-To preview the built application: ￼
-
+```bash
 nix run
+```
 
-This serves the application using miniserve at http://localhost:8080, supporting single-page application (SPA) routing. ￼
+### Without Nix
 
-🎨 Formatting
+Do not delete flake.nix and flake.lock. These files are needed to deploy the static site to github pages.
+Although highly recommand using Nix if you want to build robust application, you can use this template without nix.
+Install npm and you can:
 
-To format the codebase: ￼
+1. run the dev server
 
-nix fmt
+```bash
+cd site
+npm run dev
+```
 
-This command formats: ￼
-• TypeScript, JavaScript, JSON, Markdown, Svelte, HTML, and CSS files using Prettier
-• Nix files using nixpkgs-fmt ￼
+2. Build the static website
 
-📄 License
+```bash
+cd site
+npm run build
+```
+### Contributing
 
-This project is licensed under the Apache-2.0 License.
+Any contributations are welcome.
+Feel free to open a pull request or issue.
 
-⸻
+### License
 
-For more details and updates, visit the GitHub repository.
-
-⸻
+MIT License

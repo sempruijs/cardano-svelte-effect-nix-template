@@ -6,7 +6,6 @@
     import ConnectWallet from "$lib/components/ConnectWallet.svelte";
     import { Option } from "effect";
     import { getUtxos } from "$lib/wallet/getUtxos";
-    import UtxoView from "$lib/components/UtxoView.svelte";
     import { connectedWallet } from "../stores/wallet";
     import Donation from '$lib/components/donation.svelte';
 
@@ -37,27 +36,20 @@
                 🎉 Congratulations
             </h1>
             <p>You've successfully setup this template</p>
+            <p>Now customise it so that it becomes you're dApp.</p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-10 m-5">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-10 m-5 pb-40">
           <div class="bg-gray-700 border-10 border-gray-600 rounded-3xl p-5 grid place-items-center">
             <ConnectWallet />
             {#if $connectedWallet}
                 <Donation />
             {/if}
           </div>
-          <div class="bg-black p-4">
+          <div class="bg-black p-15">
               <LearnMore />
           </div>
         </div>
-
-        <div class="">
-
-            {#if connectedWallet}
-                <UtxoView utxos={state.utxos} />
-            {/if}
-        </div>
-
     </main>
 </div>
 

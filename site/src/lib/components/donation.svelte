@@ -9,7 +9,7 @@
 
   let state = $state({
     utxos: [] as Utxo[],
-    explorerLink: Option.none,
+    explorerLink: Option.none<string>(),
     selected: '5',
     customAda: ''
   });
@@ -36,8 +36,10 @@
   }
 </script>
 
-<div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow-md space-y-6">
-  <h1 class="text-2xl font-bold text-gray-800 text-center">Make a Donation</h1>
+<div class="min-w-100 max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow-md space-y-6 text-black">
+  {#if Option.isNone(state.explorerLink)}
+  <h1 class="text-2xl font-bold text-gray-800 text-center">Donate</h1>
+  <p>If this template saved you time, consider making a one-time donation.</p>
 
   <div class="flex flex-wrap gap-2 justify-center">
     {#each presetAmounts as amount}
@@ -75,11 +77,12 @@
   >
     Send {state.selected === 'custom' ? `₳${state.customAda || '...'}` : `₳${state.selected}`}
   </button>
+  {/if}
 
   {#if Option.isSome(state.explorerLink)}
     <p class="text-green-600 text-sm text-center break-all mt-2">
       ✅ Transaction sent!
     </p>
-    <a href="{state.explorerLink.value}">view on explorer</a>
+    <a class="text-blue-500" href="{state.explorerLink.value}">view on explorer</a>
   {/if}
 </div>

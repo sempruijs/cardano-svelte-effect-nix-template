@@ -1,6 +1,6 @@
-import { Effect, Context } from "effect"
+import { Effect, Context } from "effect";
 import type { BrowserWallet } from "@meshsdk/core";
-import type { Utxo } from "./types"
+import type { Utxo } from "./types";
 
 export type WalletError =
   | { _tag: "GetUtxosError"; reason: unknown }
@@ -11,10 +11,13 @@ export type WalletError =
 export class Wallet extends Context.Tag("Wallet")<
   Wallet,
   {
-    readonly getUtxos: Effect.Effect<Utxo[], WalletError>,
-    readonly getChangeAddress: Effect.Effect<string, WalletError>,
-    readonly signTx: (tx: string, partialSign?: boolean) => Effect.Effect<string, WalletError>,
-    readonly submitTx: (tx: string) => Effect.Effect<string, WalletError>
+    readonly getUtxos: Effect.Effect<Utxo[], WalletError>;
+    readonly getChangeAddress: Effect.Effect<string, WalletError>;
+    readonly signTx: (
+      tx: string,
+      partialSign?: boolean,
+    ) => Effect.Effect<string, WalletError>;
+    readonly submitTx: (tx: string) => Effect.Effect<string, WalletError>;
   }
 >() {}
 

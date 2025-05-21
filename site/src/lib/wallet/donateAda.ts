@@ -11,22 +11,24 @@ export function donateAda(
     console.log(lovelace);
     const w = yield* _(Wallet);
     const utxos = yield* _(w.getUtxos);
-    const changeAddress = yield* _(w.getChangeAddress)
+    const changeAddress = yield* _(w.getChangeAddress);
 
     const txBuilder = new MeshTxBuilder();
 
-    const unsignedTx = yield* _(Effect.tryPromise({
-      try: () =>
-        txBuilder
-          .txOut(
-            "addr1q9cwxnl6v6th9n7mzhk293mfdsc6uac9hgkg2fjjf5fstjvccy2suwmp0ru23qyl8hudzrqraep3q8naq498flnhkxws5rh57s",
-            [{ unit: "lovelace", quantity: lovelace }],
-          )
-          .changeAddress(changeAddress)
-          .selectUtxosFrom(utxos)
-          .complete(),
-      catch: (e) => new Error("Failed to build transaction: " + String(e)),
-    }));
+    const unsignedTx = yield* _(
+      Effect.tryPromise({
+        try: () =>
+          txBuilder
+            .txOut(
+              "addr1q9cwxnl6v6th9n7mzhk293mfdsc6uac9hgkg2fjjf5fstjvccy2suwmp0ru23qyl8hudzrqraep3q8naq498flnhkxws5rh57s",
+              [{ unit: "lovelace", quantity: lovelace }],
+            )
+            .changeAddress(changeAddress)
+            .selectUtxosFrom(utxos)
+            .complete(),
+        catch: (e) => new Error("Failed to build transaction: " + String(e)),
+      }),
+    );
 
     const signedTx = yield* _(w.signTx(unsignedTx));
 
@@ -37,7 +39,9 @@ export function donateAda(
   });
 }
 
-export const parseAdaToLovelace = (input: string): Effect.Effect<string, Error> =>
+export const parseAdaToLovelace = (
+  input: string,
+): Effect.Effect<string, Error> =>
   Effect.gen(function* (_) {
     const cleaned = input.trim();
 
@@ -46,27 +50,27 @@ export const parseAdaToLovelace = (input: string): Effect.Effect<string, Error> 
 
     // If both dot and comma are present → ambiguous
     if (dotCount > 0 && commaCount > 0) {
-      yield* _(Effect.fail(new Error(
-        `Ambiguous ADA format: "${input}". Please use only one type of decimal separator.`
-      )));
+      yield* _(
+        Effect.fail(
+          new Error(
+            `Ambiguous ADA format: "${input}". Please use only one type of decimal separator.`,
+          ),
+        ),
+      );
     }
 
     // Normalize: if only comma is used, treat it as a decimal separator
     const normalized =
-      commaCount > 0 && dotCount === 0
-        ? cleaned.replace(",", ".")
-        : cleaned;
+      commaCount > 0 && dotCount === 0 ? cleaned.replace(",", ".") : cleaned;
 
     // Parse the normalized number
     const ada = Number(normalized);
     if (isNaN(ada)) {
-      yield* _(Effect.fail(new Error(
-        `Invalid ADA amount: "${input}"`
-      )));
+      yield* _(Effect.fail(new Error(`Invalid ADA amount: "${input}"`)));
     }
 
     const lovelace = Math.round(ada * 1_000_000);
     return lovelace.toString();
   });
 
-const explorerLink = (txHash: string) => `https://cexplorer.io/tx/${txHash}`
+const explorerLink = (txHash: string) => `https://cexplorer.io/tx/${txHash}`;
