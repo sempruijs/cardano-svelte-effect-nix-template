@@ -1,81 +1,94 @@
 # Cardano Svelte Effect Nix Template
 
-Don't waste time setting up your development enviourment.
-Start building your dApp for cardano.
-You can visit [the website](https://sempruijs.github.io/cardano-svelte-effect-nix-template/) to see a working template.
+Don’t waste time setting up your development environment.  
+Start building your Cardano dApp right away.
+
+You can visit [the website](https://sempruijs.github.io/cardano-svelte-effect-nix-template/) to see the working template in action.
+
+---
 
 ### Motivation
 
-I saw [Cor's svelte effect nix template](https://github.com/cor/svelte-effect-nix-template) and it helped me getting started with svelte.
-I wanted to get started building dApps with meshjs but it was painful getting a working enviourment.
-After a long time fixing bugs that I did not want to fix I've thought lets make a template so that other cardano developers can build dApps faster.
+I came across [Cor's Svelte Effect Nix Template](https://github.com/cor/svelte-effect-nix-template), which helped me get started with Svelte.  
+However, when I wanted to start building dApps with MeshJS, I ran into a lot of issues setting up a working environment.
+
+After spending too much time fixing bugs I didn’t want to deal with, I decided to create a template to help other Cardano developers get started faster.
+
+---
 
 ## What's in the template?
 
-- svelte as the framework
-- meshjs for interacting with cardano wallets
-- tailwindcss for easy css
-- typescript effect for writing robust typescript.
-- nix flakes for reproducable developer enviourment and builds.
-- github pages action for deployen the nix derivation as a static site.
+- **Svelte** – Frontend framework  
+- **MeshJS** – Easy interaction with Cardano wallets  
+- **Tailwind CSS** – Utility-first styling  
+- **TypeScript + Effect** – Robust and type-safe programming  
+- **Nix Flakes** – Reproducible dev environment and build system  
+- **GitHub Actions** – Deploys the Nix build as a static site via GitHub Pages
 
-## Getting started
+---
 
-Fork and clone the template.
+## Getting Started
 
-### With Nix
+### With Nix (recommended)
 
 The best way to use this template is with Nix flakes.
-Then you can:
 
-1. Enter a devshell
+1. Enter the development shell:
 
-```bash
-nix develop
-```
+   ```bash
+   nix develop
+   ```
 
-2. Run a dev server
+2. Run the development server:
 
-```bash
-nix run .#dev
-```
+   ```bash
+   nix run .#dev
+   ```
 
-3. Build the app as a static website.
+3. Build the app as a static site:
 
-```bash
-nix build
-```
+   ```bash
+   nix build
+   ```
 
-4. Build the static website and preview the build on localhost:
+4. Preview the build locally:
 
-```bash
-nix run
-```
+   ```bash
+   nix run
+   ```
+
+---
 
 ### Without Nix
 
-Do not delete flake.nix and flake.lock. These files are needed to deploy the static site to github pages.
-Although highly recommand using Nix if you want to build robust application, you can use this template without nix.
-Install npm and you can:
+> ⚠️ **Note:** Do not delete `flake.nix` or `flake.lock` — they are required for deploying to GitHub Pages.
 
-1. run the dev server
+While using Nix is highly recommended for a robust setup, you can still use this template with just `npm`:
 
-```bash
-cd site
-npm run dev
-```
+1. Run the development server:
 
-2. Build the static website
+   ```bash
+   cd site
+   npm install
+   npm run dev
+   ```
 
-```bash
-cd site
-npm run build
-```
-### Contributing
+2. Build the static website:
 
-Any contributations are welcome.
-Feel free to open a pull request or issue.
+   ```bash
+   cd site
+   npm run build
+   ```
 
-### License
+---
 
-MIT License
+## Contributing
+
+Contributions are very welcome!  
+Feel free to open an issue or submit a pull request.
+
+---
+
+## License
+
+[MIT License](./LICENSE.md)
