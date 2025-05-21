@@ -1,11 +1,11 @@
 import { Effect } from "effect";
 import type { BrowserWallet } from "@meshsdk/core";
 import { MeshTxBuilder } from "@meshsdk/core";
-import { Wallet } from "$lib/wallet";
+import { Wallet, type WalletError } from "$lib/wallet";
 
 export function donateAda(
   ada: string,
-): Effect.Effect<string, Error, Wallet> {
+): Effect.Effect<string, WalletError, Wallet> {
   return Effect.gen(function* (_) {
     const lovelace = yield* _(parseAdaToLovelace(ada));
     console.log(lovelace);
@@ -32,7 +32,8 @@ export function donateAda(
 
     const txHash = yield* _(w.submitTx(signedTx));
 
-    return txHash;
+    const link = explorerLink(txHash);
+    return link;
   });
 }
 
@@ -67,3 +68,5 @@ export const parseAdaToLovelace = (input: string): Effect.Effect<string, Error> 
     const lovelace = Math.round(ada * 1_000_000);
     return lovelace.toString();
   });
+
+const explorerLink = (txHash: string) => `https://cexplorer.io/tx/${txHash}`

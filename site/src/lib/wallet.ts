@@ -2,35 +2,41 @@ import { Effect, Context } from "effect"
 import type { BrowserWallet } from "@meshsdk/core";
 import type { Utxo } from "./types"
 
+export type WalletError =
+  | { _tag: "GetUtxosError"; reason: unknown }
+  | { _tag: "GetChangeAddressError"; reason: unknown }
+  | { _tag: "SignTxError"; reason: unknown }
+  | { _tag: "SubmitTxError"; reason: unknown };
+
 export class Wallet extends Context.Tag("Wallet")<
   Wallet,
   {
-    readonly getUtxos: Effect.Effect<Utxo[], Error>,
-    readonly getChangeAddress: Effect.Effect<string, Error>,
-    readonly signTx: (tx: string, partialSign?: boolean) => Effect.Effect<string, Error>,
-    readonly submitTx: (tx: string) => Effect.Effect<string, Error>
+    readonly getUtxos: Effect.Effect<Utxo[], WalletError>,
+    readonly getChangeAddress: Effect.Effect<string, WalletError>,
+    readonly signTx: (tx: string, partialSign?: boolean) => Effect.Effect<string, WalletError>,
+    readonly submitTx: (tx: string) => Effect.Effect<string, WalletError>
   }
 >() {}
 
 export function provideWallet(wallet: BrowserWallet) {
   return Effect.provideService(Wallet, {
     getUtxos: Effect.tryPromise({
-      try: async () => await wallet.getUtxos(),
-      catch: (e) => new Error(`Failed to fetch UTXOs: ${String(e)}`)
+      try: () => wallet.getUtxos(),
+      catch: (e): WalletError => ({ _tag: "GetUtxosError", reason: e }),
     }),
     getChangeAddress: Effect.tryPromise({
-      try: async () => await wallet.getChangeAddress(),
-      catch: (e) => new Error(`Failed to fetch change address: ${String(e)}`)
+      try: () => wallet.getChangeAddress(),
+      catch: (e): WalletError => ({ _tag: "GetChangeAddressError", reason: e }),
     }),
-    signTx: (tx: string, partialSign = true) =>
+    signTx: (tx, partial = true) =>
       Effect.tryPromise({
-        try: async () => await wallet.signTx(tx, partialSign),
-        catch: (e) => new Error(`Failed to sign transaction: ${String(e)}`)
+        try: () => wallet.signTx(tx, partial),
+        catch: (e): WalletError => ({ _tag: "SignTxError", reason: e }),
       }),
-    submitTx: (tx: string) =>
+    submitTx: (tx) =>
       Effect.tryPromise({
-        try: async () => await wallet.submitTx(tx),
-        catch: (e) => new Error(`Failed to submit transaction: ${String(e)}`)
+        try: () => wallet.submitTx(tx),
+        catch: (e): WalletError => ({ _tag: "SubmitTxError", reason: e }),
       }),
   });
 }
