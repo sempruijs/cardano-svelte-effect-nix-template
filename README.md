@@ -3,6 +3,7 @@
 Don’t waste time setting up your development environment.  
 Start building your Cardano dApp right away.
 
+This template automatically deployes your dApp on merge with main.
 You can visit [the website](https://sempruijs.github.io/cardano-svelte-effect-nix-template/) to see the working template in action.
 
 ---
