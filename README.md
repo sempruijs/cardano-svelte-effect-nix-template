@@ -91,4 +91,4 @@ Feel free to open an issue or submit a pull request.
 
 ## License
 
-[MIT License](./LICENSE.md)
+[MIT License](./LICENSE)
