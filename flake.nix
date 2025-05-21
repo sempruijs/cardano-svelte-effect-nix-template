@@ -1,5 +1,5 @@
 {
-  description = "Svelte Effect Nix Template";
+  description = "My cardano dApp";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
